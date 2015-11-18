@@ -1,8 +1,14 @@
 <!-- drawable/menu.xml -->
 <vector xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:height="24dp"
     android:width="24dp"
     android:viewportWidth="24"
-    android:viewportHeight="24">
-    <path android:fillColor="#000" android:pathData="M3,6H21V8H3V6M3,11H21V13H3V11M3,16H21V18H3V16Z" />
+    android:viewportHeight="24"
+    app:vc_viewportWidth="24"
+    app:vc_viewportHeight="24">
+    <path android:fillColor="#000"
+        app:vc_fillColor="#000"
+        android:pathData="M3,6H21V8H3V6M3,11H21V13H3V11M3,16H21V18H3V16Z"
+        app:vc_pathData="M3,6H21V8H3V6M3,11H21V13H3V11M3,16H21V18H3V16Z" />
 </vector>
