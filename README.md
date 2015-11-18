@@ -6,11 +6,11 @@ Stage 2
 
 * Task7: Threads and JSON
 
-Weather Viewer
+#Weather Viewer
 Weather forecast for 5 days every 3 hours from http://openweathermap.org/api
 
 
-GitHub: https://github.com/trigor74/weather
+GitHub: https://github.com/trigor74/weatherviewer
 
 APK: https://www.dropbox.com/s/exvahne7kuon85v/weather.apk?dl=1
 
