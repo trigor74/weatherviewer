@@ -39,14 +39,13 @@ public class ForecastListFragment extends Fragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setRetainInstance(true);
+        // TODO: 19.11.15 load forecast data from site
+        mAdapter = new ArrayAdapter<>(getActivity(), android.R.layout.simple_list_item_1, testlist);
     }
 
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        if (container == null) {
-            return null;
-        }
         View view = inflater.inflate(R.layout.fragment_forecast_list, container, false);
         return view;
     }
@@ -54,14 +53,13 @@ public class ForecastListFragment extends Fragment {
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        mListView = (ListView) getActivity().findViewById(R.id.list_view_forecast);
+        mListView = (ListView) view.findViewById(R.id.list_view_forecast);
     }
 
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
 
-        mAdapter = new ArrayAdapter<>(getActivity(), android.R.layout.simple_list_item_1, testlist);
         mListView.setAdapter(mAdapter);
         mListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override

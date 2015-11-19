@@ -10,8 +10,8 @@ import android.widget.TextView;
 
 public class ForecastDetailFragment extends Fragment {
 
-    public static String ARG_INDEX = "INDEX";
-    private int mIndex;
+    public static String ARG_INDEX = "ARG_INDEX";
+    private static int mIndex = -1;
     private TextView textView;
 
     @Override
@@ -25,9 +25,6 @@ public class ForecastDetailFragment extends Fragment {
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        if (container == null) {
-            return null;
-        }
         View view = inflater.inflate(R.layout.fragment_forecast_detail, container, false);
         return view;
     }
@@ -36,7 +33,7 @@ public class ForecastDetailFragment extends Fragment {
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-        textView = (TextView) getActivity().findViewById(R.id.textView);
+        textView = (TextView) view.findViewById(R.id.textView);
     }
 
     @Override

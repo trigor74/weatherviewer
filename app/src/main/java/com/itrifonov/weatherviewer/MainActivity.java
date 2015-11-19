@@ -1,8 +1,6 @@
 package com.itrifonov.weatherviewer;
 
-import android.os.PersistableBundle;
-import android.support.v4.app.FragmentManager;
-import android.support.v4.app.FragmentTransaction;
+import android.content.Intent;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -20,19 +18,12 @@ public class MainActivity extends AppCompatActivity implements ForecastListFragm
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         ActionBar actionBar = getSupportActionBar();
-//        if (actionBar != null) {
-//            actionBar.setHomeAsUpIndicator(R.drawable.menu);
-//            actionBar.setDisplayHomeAsUpEnabled(true);
-//        }
+        if (actionBar != null) {
+            actionBar.setDisplayShowHomeEnabled(true);
+            actionBar.setIcon(R.drawable.ic_weather_sunny);
+        }
 
-        if (savedInstanceState == null) {
-            // TODO: 18.11.2015 load settings
-            FragmentManager fragmentManager = getSupportFragmentManager();
-            FragmentTransaction transaction = fragmentManager.beginTransaction();
-            ForecastListFragment listFragment = new ForecastListFragment();
-            transaction.add(R.id.layout_forecast_content, listFragment);
-            transaction.commit();
-        } else {
+        if (savedInstanceState != null) {
             // TODO: 18.11.2015 restore state
         }
     }
@@ -47,12 +38,7 @@ public class MainActivity extends AppCompatActivity implements ForecastListFragm
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case android.R.id.home:
-                FragmentManager fragmentManager = getSupportFragmentManager();
-                if (fragmentManager.getBackStackEntryCount() > 0) {
-                    fragmentManager.popBackStack();
-                } else {
                     finish();
-                }
                 return true;
             case R.id.action_refresh:
                 // TODO: 18.11.2015 Add logic
@@ -69,24 +55,19 @@ public class MainActivity extends AppCompatActivity implements ForecastListFragm
     }
 
     @Override
-    public void onSaveInstanceState(Bundle outState, PersistableBundle outPersistentState) {
-        super.onSaveInstanceState(outState, outPersistentState);
-    }
-
-    @Override
     public void onListItemSelected(int position) {
-        FragmentManager fragmentManager = getSupportFragmentManager();
-//        if (findViewById(R.id.layout_forecast_detail) != null) {
-//            // TODO: 18.11.2015 find fragment with details and update data
-//        } else {
-        FragmentTransaction transaction = fragmentManager.beginTransaction();
-        ForecastDetailFragment detailFragment = new ForecastDetailFragment();
-        Bundle args = new Bundle();
-        args.putInt(ForecastDetailFragment.ARG_INDEX, position);
-        detailFragment.setArguments(args);
-        transaction.replace(R.id.layout_forecast_content, detailFragment);
-        transaction.addToBackStack(null);
-        transaction.commit();
-//        }
+        if (findViewById(R.id.forecast_detail) != null) {
+            ForecastDetailFragment detailFragment = (ForecastDetailFragment) getSupportFragmentManager()
+                    .findFragmentById(R.id.forecast_detail);
+            if (detailFragment != null) {
+                detailFragment.update(position);
+            }
+        } else {
+            // TODO: 18.11.15 start new activity with detail info
+            Intent intent = new Intent(this, DetailActivity.class);
+            // TODO: 18.11.15 replace "ARG_INDEX" with constant name from class
+            intent.putExtra(DetailActivity.ARG_INDEX, position);
+            startActivity(intent);
+        }
     }
 }
