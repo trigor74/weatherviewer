@@ -11,6 +11,11 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
 
+import com.itrifonov.weatherviewer.weatherapi.ForecastListItem;
+import com.itrifonov.weatherviewer.weatherapi.WeatherForecastData;
+
+import java.util.ArrayList;
+
 public class ForecastListFragment extends Fragment {
 
     private ListView mListView;
@@ -39,7 +44,13 @@ public class ForecastListFragment extends Fragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setRetainInstance(true);
+
         // TODO: 19.11.15 load forecast data from site
+        WeatherForecastData forecast = WeatherForecastData.getInstance();
+        forecast.setCityName("cherkassy,ua");
+        forecast.reloadData();
+        ArrayList<ForecastListItem> list = forecast.getWeatherForecastList();
+
         mAdapter = new ArrayAdapter<>(getActivity(), android.R.layout.simple_list_item_1, testlist);
     }
 

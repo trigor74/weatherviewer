@@ -1,21 +1,5 @@
 package com.itrifonov.weatherviewer.weatherapi;
 
-public class Openweathermap {
-    City city;
-    int cnt; // Number of lines returned by this API call
-    ForecastListItem list;
-
-    private class City{
-        int id;
-        String name;
-        String country;
-    }
-
-    private class ForecastListItem{
-        int dt;
-
-    }
-}
 /*
     code Internal parameter
     message Internal parameter
@@ -54,3 +38,38 @@ public class Openweathermap {
             list.snow.3h Snow volume for last 3 hours
         list.dt_txt Data/time of caluclation, UTC
 */
+
+import java.util.ArrayList;
+
+public class OpenweathermapObject {
+    private City city;
+    private int cnt;
+    private ArrayList<ForecastListItem> list;
+
+    public ArrayList<ForecastListItem> getWeatherForecastList() {
+        return list;
+    }
+
+    public String getCityName() {
+        return city.name;
+    }
+
+    public String getCountry() {
+        return city.country;
+    }
+    public int getCityId() {
+        return city.id;
+    }
+
+    private class City {
+        int id;
+        String name;
+        Coord coord;
+        String country;
+
+        private class Coord {
+            float lon;
+            float lat;
+        }
+    }
+}
