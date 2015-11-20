@@ -1,11 +1,15 @@
 package com.itrifonov.weatherviewer.weatherapi;
 
-import java.util.ArrayList;
+import android.graphics.Bitmap;
+
+import com.google.gson.annotations.Expose;
+import com.google.gson.annotations.SerializedName;
+
 
 public class ForecastListItem {
     int dt;
     Conditions main;
-    ArrayList<Weather> weather;
+    Weather[] weather;
     Clouds clouds;
     Wind wind;
     RainSnow rain;
@@ -27,6 +31,8 @@ public class ForecastListItem {
         int id;
         String main;
         String description;
+        @Expose
+        Bitmap iconBitmap;
         String icon;
     }
 
@@ -36,11 +42,12 @@ public class ForecastListItem {
 
     class Wind {
         float speed;
-        int deg;
+        float deg;
     }
 
     class RainSnow {
-        String _3h;
+        @SerializedName("3h")
+        String m3h;
     }
 }
 

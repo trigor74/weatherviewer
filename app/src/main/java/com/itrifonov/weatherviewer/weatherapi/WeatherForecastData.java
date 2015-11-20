@@ -1,12 +1,15 @@
 package com.itrifonov.weatherviewer.weatherapi;
 
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.os.AsyncTask;
 
-import java.io.BufferedReader;
+import com.google.gson.Gson;
+
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
-import java.net.URL;
 import java.util.ArrayList;
 
 public class WeatherForecastData {
@@ -14,7 +17,6 @@ public class WeatherForecastData {
     private int mCityId;
     private long updateState;
     private OpenweathermapObject mWeatherForecast;
-    //private ArrayList<pic> mForecastPics;
 
     private static WeatherForecastData INSTANCE = null;
 
@@ -116,41 +118,35 @@ public class WeatherForecastData {
 
         @Override
         protected OpenweathermapObject doInBackground(String... params) {
-            String path = BASE_URL.concat(params[0].concat(API_KEY));
-            OpenweathermapObject weatherforecast;
-            weatherforecast = null;
-            BufferedReader reader = null;
+            String url = BASE_URL.concat(params[0].concat(API_KEY));
+            OpenweathermapObject openweathermapResult = null;
             try {
-                URL url = new URL(path);
-                HttpURLConnection connection = (HttpURLConnection) url.openConnection();
+                HttpURLConnection connection = (HttpURLConnection) new java.net.URL(url).openConnection();
                 connection.setRequestMethod("GET");
                 connection.setReadTimeout(10000);
                 connection.connect();
-                reader = new BufferedReader(new InputStreamReader(connection.getInputStream()));
-                StringBuilder buffer = new StringBuilder();
-                String line = null;
-                while ((line = reader.readLine()) != null) {
-                    buffer.append(line + "\n");
-                }
+                InputStreamReader inputStreamReader = new InputStreamReader(connection.getInputStream());
 
-                // TODO: 20.11.2015 handle buf.toString() with GSON
-                // weatherforecast = ....;
-                // TODO: 20.11.2015 load images (icons)
+                Gson gson = new Gson();
+                openweathermapResult = gson.fromJson(inputStreamReader, OpenweathermapObject.class);
+                connection.disconnect();
+                connection = null;
 
-            } catch (IOException e) {
-                e.printStackTrace();
-                // TODO: 20.11.2015 handle exception
-            }
-            finally {
-                if (reader != null) {
+                for (final ForecastListItem item : openweathermapResult.getWeatherForecastList()) {
+                    Bitmap bitmap = null;
+                    String iconUrl = IMG_URL.concat(item.weather[0].icon.concat(IMG_EXT));
                     try {
-                        reader.close();
-                    } catch (IOException e) {
+                        InputStream inputStream = new java.net.URL(iconUrl).openStream();
+                        bitmap = BitmapFactory.decodeStream(inputStream);
+                    } catch (Exception e) {
                         e.printStackTrace();
                     }
+                    item.weather[0].iconBitmap = bitmap; // imageView.setImageBitmap(bitmap);
                 }
+            } catch (IOException e) {
+                e.printStackTrace();
             }
-            return weatherforecast;
+            return openweathermapResult;
         }
 
         @Override

@@ -44,7 +44,7 @@ import java.util.ArrayList;
 public class OpenweathermapObject {
     private City city;
     private int cnt;
-    private ArrayList<ForecastListItem> list;
+    ArrayList<ForecastListItem> list;
 
     public ArrayList<ForecastListItem> getWeatherForecastList() {
         return list;
@@ -57,6 +57,7 @@ public class OpenweathermapObject {
     public String getCountry() {
         return city.country;
     }
+
     public int getCityId() {
         return city.id;
     }
