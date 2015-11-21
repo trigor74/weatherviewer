@@ -8,7 +8,8 @@ import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 
-public class MainActivity extends AppCompatActivity implements ForecastListFragment.OnListItemSelectedListener {
+public class MainActivity extends AppCompatActivity
+        implements ForecastListFragment.OnListItemSelectedListener {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -41,7 +42,8 @@ public class MainActivity extends AppCompatActivity implements ForecastListFragm
                     finish();
                 return true;
             case R.id.action_refresh:
-                // TODO: 18.11.2015 Add logic
+                ((ForecastListFragment) getSupportFragmentManager().findFragmentById(R.id.forecast_list))
+                        .updateWeatherForecast();
                 return true;
             case R.id.action_search:
                 // TODO: 18.11.2015 Add logic

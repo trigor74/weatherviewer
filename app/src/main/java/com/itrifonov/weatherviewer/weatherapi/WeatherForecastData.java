@@ -13,9 +13,32 @@ import java.net.HttpURLConnection;
 import java.util.ArrayList;
 
 public class WeatherForecastData {
+
+    public interface OnWeatherForecastUpdatedListener {
+        void onWeatherForecastUpdated();
+    }
+
+    private static volatile ArrayList<OnWeatherForecastUpdatedListener> listeners = new ArrayList<>();
+
+    public void addOnWeatherForecastUpdatedListner(OnWeatherForecastUpdatedListener listener) {
+        listeners.add(listener);
+    }
+
+    public boolean removeOnWeatherForecastUpdatedListner(OnWeatherForecastUpdatedListener listener) {
+        return listeners.remove(listener);
+    }
+
+    private void fireOnWeatherForecastUpdated() {
+        for (final OnWeatherForecastUpdatedListener listener :
+                listeners) {
+            listener.onWeatherForecastUpdated();
+        }
+    }
+
     private String mCityName;
     private int mCityId;
     private long updateState;
+    private boolean mIsUpdateInProgress = false;
     private OpenweathermapObject mWeatherForecast;
 
     private static WeatherForecastData INSTANCE = null;
@@ -24,6 +47,14 @@ public class WeatherForecastData {
         if (INSTANCE == null) {
             INSTANCE = new WeatherForecastData();
         }
+        return INSTANCE;
+    }
+
+    public static WeatherForecastData getInstance(OnWeatherForecastUpdatedListener listener) {
+        if (INSTANCE == null) {
+            INSTANCE = new WeatherForecastData();
+        }
+        INSTANCE.addOnWeatherForecastUpdatedListner(listener);
         return INSTANCE;
     }
 
@@ -103,9 +134,13 @@ public class WeatherForecastData {
     }
 
     public void reloadData() {
+        if (mIsUpdateInProgress)
+            return;
         if (mCityId > 0) {
+            mIsUpdateInProgress = true;
             new OpenweathermapGetDataTask().execute("id=".concat(Integer.toString(mCityId)));
         } else if (!mCityName.isEmpty()) {
+            mIsUpdateInProgress = true;
             new OpenweathermapGetDataTask().execute("q=".concat(mCityName));
         }
     }
@@ -152,7 +187,9 @@ public class WeatherForecastData {
         @Override
         protected void onPostExecute(OpenweathermapObject openweathermapObject) {
             mWeatherForecast = openweathermapObject;
-            updateState = System.currentTimeMillis() / 1000L; //latest update timestamp
+            updateState = System.currentTimeMillis() / 1000L; //latest updateWeatherForecast timestamp
+            fireOnWeatherForecastUpdated();
+            mIsUpdateInProgress = false;
         }
     }
 }
