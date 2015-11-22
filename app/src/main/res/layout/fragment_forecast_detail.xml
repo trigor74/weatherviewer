@@ -22,7 +22,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
-                android:text="08:00"
+                android:text=""
                 android:textAppearance="?android:attr/textAppearanceLarge" />
 
             <TextView
@@ -30,7 +30,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
-                android:text="MONDAY"
+                android:text=""
                 android:textAppearance="?android:attr/textAppearanceMedium" />
 
             <TextView
@@ -38,7 +38,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
-                android:text="23 NOV 2015"
+                android:text=""
                 android:textAppearance="?android:attr/textAppearanceMedium" />
 
         </LinearLayout>
@@ -54,13 +54,13 @@
                 android:id="@+id/forecast_detail_icon"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:src="@drawable/icon_10d" />
+                android:src="@android:drawable/ic_dialog_alert" />
 
             <TextView
                 android:id="@+id/forecast_detail_temp"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="+10 C"
+                android:text=""
                 android:textAppearance="?android:attr/textAppearanceLarge" />
 
         </LinearLayout>
@@ -70,7 +70,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:paddingTop="5dp"
-            android:text="Weather forecast info"
+            android:text="@string/txt_no_data"
             android:textAppearance="?android:attr/textAppearanceLarge" />
 
     </LinearLayout>
@@ -85,7 +85,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:paddingTop="5dp"
-        android:text="@string/txt_temp_min"
+        android:text=""
         android:textAppearance="?android:attr/textAppearanceLarge" />
 
     <TextView
@@ -93,7 +93,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:paddingTop="5dp"
-        android:text="@string/txt_temp_max"
+        android:text=""
         android:textAppearance="?android:attr/textAppearanceLarge" />
 
     <TextView
@@ -101,7 +101,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:paddingTop="5dp"
-        android:text="@string/txt_pressure"
+        android:text=""
         android:textAppearance="?android:attr/textAppearanceLarge" />
 
     <TextView
@@ -109,7 +109,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:paddingTop="5dp"
-        android:text="@string/txt_humidity"
+        android:text=""
         android:textAppearance="?android:attr/textAppearanceLarge" />
 
     <TextView
@@ -117,7 +117,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:paddingTop="5dp"
-        android:text="@string/txt_wind_speed"
+        android:text=""
         android:textAppearance="?android:attr/textAppearanceLarge" />
 
     <TextView
@@ -125,7 +125,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:paddingTop="5dp"
-        android:text="@string/txt_wind_direction"
+        android:text=""
         android:textAppearance="?android:attr/textAppearanceLarge" />
 
     <TextView
@@ -133,7 +133,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:paddingTop="5dp"
-        android:text="@string/txt_clouds"
+        android:text=""
         android:textAppearance="?android:attr/textAppearanceLarge" />
 
     <TextView
@@ -141,17 +141,15 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:paddingTop="5dp"
-        android:text="@string/txt_rain"
-        android:textAppearance="?android:attr/textAppearanceLarge"
-        android:visibility="invisible" />
+        android:text=""
+        android:textAppearance="?android:attr/textAppearanceLarge" />
 
     <TextView
         android:id="@+id/forecast_detail_snow"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:paddingTop="5dp"
-        android:text="@string/txt_snow"
-        android:textAppearance="?android:attr/textAppearanceLarge"
-        android:visibility="invisible" />
+        android:text=""
+        android:textAppearance="?android:attr/textAppearanceLarge" />
 
 </LinearLayout>

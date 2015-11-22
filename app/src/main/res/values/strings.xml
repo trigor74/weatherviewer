@@ -12,4 +12,5 @@
     <string name="txt_clouds">Cloudiness: %1$d%%</string>
     <string name="txt_rain">Rain volume for last 3 hours: %1$s mm</string>
     <string name="txt_snow">Snow volume for last 3 hours: %1$s</string>
+    <string name="txt_no_data">Weather forecast is missing</string>
 </resources>

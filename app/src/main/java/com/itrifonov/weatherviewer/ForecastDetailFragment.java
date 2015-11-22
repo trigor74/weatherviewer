@@ -77,7 +77,9 @@ public class ForecastDetailFragment extends Fragment {
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
 
-        update(mIndex);
+        if (mIndex >= 0) {
+            update(mIndex);
+        }
     }
 
     public void update(int index) {
