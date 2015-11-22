@@ -150,10 +150,11 @@ public class WeatherForecastData {
         private String IMG_URL = "http://openweathermap.org/img/w/";
         private String IMG_EXT = ".png";
         private String API_KEY = "&appid=28bfbe7a35614f03ddaaf3b091f2a414";
+        private String ADD_KEY = "&units=metric";
 
         @Override
         protected OpenweathermapObject doInBackground(String... params) {
-            String url = BASE_URL.concat(params[0].concat(API_KEY));
+            String url = BASE_URL.concat(params[0].concat(API_KEY).concat(ADD_KEY));
             OpenweathermapObject openweathermapResult = null;
             try {
                 HttpURLConnection connection = (HttpURLConnection) new java.net.URL(url).openConnection();
@@ -173,7 +174,7 @@ public class WeatherForecastData {
                     try {
                         InputStream inputStream = new java.net.URL(iconUrl).openStream();
                         bitmap = BitmapFactory.decodeStream(inputStream);
-                    } catch (Exception e) {
+                    } catch (IOException e) {
                         e.printStackTrace();
                     }
                     item.weather[0].iconBitmap = bitmap; // imageView.setImageBitmap(bitmap);

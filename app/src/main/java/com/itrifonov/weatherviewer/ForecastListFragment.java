@@ -20,7 +20,7 @@ import java.util.ArrayList;
 
 public class ForecastListFragment extends Fragment
         implements WeatherForecastData.OnWeatherForecastUpdatedListener,
-        SwipeRefreshLayout.OnRefreshListener{
+        SwipeRefreshLayout.OnRefreshListener {
 
     private WeatherForecastData weatherForecastData;
     private ListView mListView;
@@ -78,7 +78,7 @@ public class ForecastListFragment extends Fragment
             public void onScroll(AbsListView view, int firstVisibleItem,
                                  int visibleItemCount, int totalItemCount) {
                 boolean enable = false;
-                if(mListView != null && mListView.getChildCount() > 0){
+                if (mListView != null && mListView.getChildCount() > 0) {
                     // check if the first item of the list is visible
                     boolean firstItemVisible = mListView.getFirstVisiblePosition() == 0;
                     // check if the top of the first item is visible
@@ -116,13 +116,15 @@ public class ForecastListFragment extends Fragment
         swipeRefreshLayout.setRefreshing(true);
         weatherForecastData.reloadData();
     }
+
     @Override
     public void onWeatherForecastUpdated() {
         ArrayList<ForecastListItem> list = weatherForecastData.getWeatherForecastList();
         if (list != null) {
             if (mAdapter == null) {
                 mAdapter = new WeatherAdapter(getActivity(), list);
-                mListView.setAdapter(mAdapter);
+                if (mListView != null)
+                    mListView.setAdapter(mAdapter);
             } else {
                 mAdapter.clear();
                 mAdapter.addAll(list);

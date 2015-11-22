@@ -39,7 +39,7 @@ public class MainActivity extends AppCompatActivity
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case android.R.id.home:
-                    finish();
+                finish();
                 return true;
             case R.id.action_refresh:
                 ((ForecastListFragment) getSupportFragmentManager().findFragmentById(R.id.forecast_list))
@@ -65,9 +65,7 @@ public class MainActivity extends AppCompatActivity
                 detailFragment.update(position);
             }
         } else {
-            // TODO: 18.11.15 start new activity with detail info
             Intent intent = new Intent(this, DetailActivity.class);
-            // TODO: 18.11.15 replace "ARG_INDEX" with constant name from class
             intent.putExtra(DetailActivity.ARG_INDEX, position);
             startActivity(intent);
         }

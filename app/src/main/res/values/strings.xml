@@ -3,4 +3,13 @@
     <string name="action_refresh">Refresh</string>
     <string name="action_settings">Settings</string>
     <string name="action_search">Search</string>
+    <string name="txt_temp_min">Minimum temperature: %1$s</string>
+    <string name="txt_temp_max">Maximum temperature: %1$s</string>
+    <string name="txt_pressure">Atmospheric pressure: %1$.2f hPa</string>
+    <string name="txt_humidity">Humidity: %1$d%%</string>
+    <string name="txt_wind_speed">Wind speed: %1$d m/s</string>
+    <string name="txt_wind_direction">Wind direction: %1$d degrees (meteorological), %2$s</string>
+    <string name="txt_clouds">Cloudiness: %1$d%%</string>
+    <string name="txt_rain">Rain volume for last 3 hours: %1$s mm</string>
+    <string name="txt_snow">Snow volume for last 3 hours: %1$s</string>
 </resources>
