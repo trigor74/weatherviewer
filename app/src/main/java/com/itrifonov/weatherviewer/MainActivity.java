@@ -7,9 +7,20 @@ import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.TextView;
+
+import com.itrifonov.weatherviewer.weatherapi.WeatherForecastData;
+
+import java.text.DateFormat;
 
 public class MainActivity extends AppCompatActivity
-        implements ForecastListFragment.OnListItemSelectedListener {
+        implements ForecastListFragment.OnListItemSelectedListener,
+        WeatherForecastData.OnWeatherForecastUpdatedListener {
+
+    private int mPosition;
+    private static final String STATE_POSITION = "STATE_POSITION";
+    private WeatherForecastData mWeatherForecast;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -24,8 +35,27 @@ public class MainActivity extends AppCompatActivity
             actionBar.setIcon(R.drawable.ic_weather_sunny);
         }
 
+        mPosition = -1;
+        mWeatherForecast = WeatherForecastData.getInstance(this);
+        if (mWeatherForecast.getWeatherForecastList() != null) {
+            mPosition = 0;
+            updateInfobar();
+        }
+
+        ForecastDetailFragment detailFragment = (ForecastDetailFragment) getSupportFragmentManager()
+                .findFragmentById(R.id.forecast_detail);
+
         if (savedInstanceState != null) {
-            // TODO: 18.11.2015 restore state
+            mPosition = savedInstanceState.getInt(STATE_POSITION, -1);
+            if (isTabletLandscapeMode()) {
+                if ((findViewById(R.id.forecast_detail) != null) && (detailFragment != null)) {
+                    detailFragment.update(mPosition);
+                }
+            } else {
+                Intent intent = new Intent(this, DetailActivity.class);
+                intent.putExtra(DetailActivity.ARG_INDEX, mPosition);
+                startActivity(intent);
+            }
         }
     }
 
@@ -58,6 +88,7 @@ public class MainActivity extends AppCompatActivity
 
     @Override
     public void onListItemSelected(int position) {
+        mPosition = position;
         if (findViewById(R.id.forecast_detail) != null) {
             ForecastDetailFragment detailFragment = (ForecastDetailFragment) getSupportFragmentManager()
                     .findFragmentById(R.id.forecast_detail);
@@ -68,6 +99,46 @@ public class MainActivity extends AppCompatActivity
             Intent intent = new Intent(this, DetailActivity.class);
             intent.putExtra(DetailActivity.ARG_INDEX, position);
             startActivity(intent);
+        }
+    }
+
+    @Override
+    protected void onSaveInstanceState(Bundle outState) {
+        outState.putInt(STATE_POSITION, mPosition);
+        super.onSaveInstanceState(outState);
+    }
+
+    private boolean isTabletLandscapeMode() {
+        return getResources().getBoolean(R.bool.is_tablet_landscape);
+    }
+
+    @Override
+    public void onWeatherForecastUpdated() {
+        updateInfobar();
+
+        if ((mPosition == -1) && (mWeatherForecast.getWeatherForecastList() != null))
+            mPosition = 0;
+
+        if (isTabletLandscapeMode()) {
+            ForecastDetailFragment detailFragment = (ForecastDetailFragment) getSupportFragmentManager()
+                    .findFragmentById(R.id.forecast_detail);
+            if ((findViewById(R.id.forecast_detail) != null) && (detailFragment != null)) {
+                detailFragment.update(mPosition);
+            }
+        }
+    }
+
+    private void updateInfobar() {
+        if (mWeatherForecast != null) {
+            TextView cityName = (TextView) findViewById(R.id.text_view_city_info);
+            if (cityName != null)
+                cityName.setText(mWeatherForecast.getCityName());
+            long timestamp = mWeatherForecast.getUpdateState() * 1000L;
+            TextView lastUpdatedTime = (TextView) findViewById(R.id.text_view_last_update_info);
+            if (lastUpdatedTime != null) {
+                lastUpdatedTime.setText(getString(R.string.txt_last_update,
+                        DateFormat.getDateTimeInstance().format(timestamp)));
+            }
         }
     }
 }

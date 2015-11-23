@@ -11,6 +11,9 @@ public class DetailActivity extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        if (isTabletLandscapeMode())
+            finish();
+
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_detail);
 
@@ -32,5 +35,9 @@ public class DetailActivity extends AppCompatActivity {
                 detailFragment.update(index);
             }
         }
+    }
+
+    private boolean isTabletLandscapeMode() {
+        return getResources().getBoolean(R.bool.is_tablet_landscape);
     }
 }

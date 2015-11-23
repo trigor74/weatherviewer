@@ -95,7 +95,7 @@ public class WeatherForecastData {
 
     public String getCityName() {
         if (mWeatherForecast != null) {
-            return mWeatherForecast.getCityName().concat(",".concat(mWeatherForecast.getCountry()));
+            return mWeatherForecast.getCityName().concat(", ".concat(mWeatherForecast.getCountry()));
         } else {
             return mCityName;
         }
@@ -177,7 +177,7 @@ public class WeatherForecastData {
                     } catch (IOException e) {
                         e.printStackTrace();
                     }
-                    item.weather[0].iconBitmap = bitmap; // imageView.setImageBitmap(bitmap);
+                    item.weather[0].iconBitmap = bitmap;
                 }
             } catch (IOException e) {
                 e.printStackTrace();

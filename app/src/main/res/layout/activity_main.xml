@@ -8,6 +8,8 @@
 
     <include layout="@layout/toolbar" />
 
+    <include layout="@layout/infobar" />
+
     <fragment
         android:id="@+id/forecast_list"
         android:name="com.itrifonov.weatherviewer.ForecastListFragment"

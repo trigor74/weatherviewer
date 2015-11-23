@@ -39,6 +39,7 @@ public class ForecastDetailFragment extends Fragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        setRetainInstance(true);
         if (getArguments() != null && getArguments().containsKey(ARG_INDEX)) {
             mIndex = getArguments().getInt(ARG_INDEX, -1);
         }
@@ -84,6 +85,10 @@ public class ForecastDetailFragment extends Fragment {
 
     public void update(int index) {
         mIndex = index;
+        if (mIndex == -1)
+            return;
+        if (WeatherForecastData.getInstance().getWeatherForecastList() == null)
+            return;
         ForecastListItem item = WeatherForecastData.getInstance().getWeatherForecastList().get(mIndex);
         try {
             long timestamp = item.getTimestamp() * 1000L;
