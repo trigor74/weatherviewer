@@ -8,6 +8,13 @@
     <include layout="@layout/toolbar" />
 
     <fragment
+        android:id="@+id/infobar"
+        android:name="com.itrifonov.weatherviewer.InfobarFragment"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        tools:layout="@layout/fragment_infobar" />
+
+    <fragment
         android:id="@+id/forecast_detail"
         android:name="com.itrifonov.weatherviewer.ForecastDetailFragment"
         android:layout_width="match_parent"

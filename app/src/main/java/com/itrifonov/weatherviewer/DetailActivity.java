@@ -27,9 +27,7 @@ public class DetailActivity extends AppCompatActivity {
         ForecastDetailFragment detailFragment = (ForecastDetailFragment) getSupportFragmentManager()
                 .findFragmentById(R.id.forecast_detail);
 
-        if (savedInstanceState != null) {
-            // TODO: 18.11.15 restore state
-        } else {
+        if (savedInstanceState == null) {
             int index = getIntent().getExtras().getInt(ARG_INDEX, -1);
             if (detailFragment != null) {
                 detailFragment.update(index);

@@ -7,11 +7,8 @@ import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.widget.TextView;
 
 import com.itrifonov.weatherviewer.weatherapi.WeatherForecastData;
-
-import java.text.DateFormat;
 
 public class MainActivity extends AppCompatActivity
         implements ForecastListFragment.OnListItemSelectedListener,
@@ -39,7 +36,6 @@ public class MainActivity extends AppCompatActivity
         mWeatherForecast = WeatherForecastData.getInstance(this);
         if (mWeatherForecast.getWeatherForecastList() != null) {
             mPosition = 0;
-            updateInfobar();
         }
 
         ForecastDetailFragment detailFragment = (ForecastDetailFragment) getSupportFragmentManager()
@@ -114,8 +110,6 @@ public class MainActivity extends AppCompatActivity
 
     @Override
     public void onWeatherForecastUpdated() {
-        updateInfobar();
-
         if ((mPosition == -1) && (mWeatherForecast.getWeatherForecastList() != null))
             mPosition = 0;
 
@@ -124,20 +118,6 @@ public class MainActivity extends AppCompatActivity
                     .findFragmentById(R.id.forecast_detail);
             if ((findViewById(R.id.forecast_detail) != null) && (detailFragment != null)) {
                 detailFragment.update(mPosition);
-            }
-        }
-    }
-
-    private void updateInfobar() {
-        if (mWeatherForecast != null) {
-            TextView cityName = (TextView) findViewById(R.id.text_view_city_info);
-            if (cityName != null)
-                cityName.setText(mWeatherForecast.getCityName());
-            long timestamp = mWeatherForecast.getUpdateState() * 1000L;
-            TextView lastUpdatedTime = (TextView) findViewById(R.id.text_view_last_update_info);
-            if (lastUpdatedTime != null) {
-                lastUpdatedTime.setText(getString(R.string.txt_last_update,
-                        DateFormat.getDateTimeInstance().format(timestamp)));
             }
         }
     }
