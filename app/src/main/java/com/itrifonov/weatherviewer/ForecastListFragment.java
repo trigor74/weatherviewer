@@ -95,13 +95,13 @@ public class ForecastListFragment extends Fragment
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
 
-        if (weatherForecastData.getUpdateState() < 0) {
-            weatherForecastData.setCityName("cherkassy,ua");
+        weatherForecastData.setCityName("cherkassy,ua");
+        if (weatherForecastData.getWeatherForecastList() == null) {
             updateWeatherForecast();
         } else {
-            if (mAdapter == null)
-                mAdapter = new WeatherAdapter(getActivity(), weatherForecastData.getWeatherForecastList());
-            mListView.setAdapter(mAdapter);
+            mAdapter = new WeatherAdapter(getActivity(), weatherForecastData.getWeatherForecastList());
+            if (mAdapter != null)
+                mListView.setAdapter(mAdapter);
         }
 
         mListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {

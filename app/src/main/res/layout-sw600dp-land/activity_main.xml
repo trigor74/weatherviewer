@@ -8,37 +8,60 @@
 
     <include layout="@layout/toolbar" />
 
-    <fragment
-        android:id="@+id/infobar"
-        android:name="com.itrifonov.weatherviewer.InfobarFragment"
+    <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        tools:layout="@layout/fragment_infobar" />
+        android:layout_height="match_parent">
 
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:orientation="horizontal">
-
-        <fragment
-            android:id="@+id/forecast_list"
-            android:name="com.itrifonov.weatherviewer.ForecastListFragment"
-            android:layout_width="@dimen/activity_list_width"
-            android:layout_height="match_parent"
-            tools:layout="@layout/fragment_forecast_list" />
-
-        <View
-            android:layout_width="1dp"
-            android:layout_height="match_parent"
-            android:background="@color/colorSeparationLine" />
-
-        <fragment
-            android:id="@+id/forecast_detail"
-            android:name="com.itrifonov.weatherviewer.ForecastDetailFragment"
+        <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            tools:layout="@layout/fragment_forecast_detail" />
+            android:orientation="vertical">
 
-    </LinearLayout>
+            <fragment
+                android:id="@+id/infobar"
+                android:name="com.itrifonov.weatherviewer.InfobarFragment"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                tools:layout="@layout/fragment_infobar" />
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:orientation="horizontal">
+
+                <fragment
+                    android:id="@+id/forecast_list"
+                    android:name="com.itrifonov.weatherviewer.ForecastListFragment"
+                    android:layout_width="@dimen/activity_list_width"
+                    android:layout_height="match_parent"
+                    tools:layout="@layout/fragment_forecast_list" />
+
+                <View
+                    android:layout_width="1dp"
+                    android:layout_height="match_parent"
+                    android:background="@color/colorSeparationLine" />
+
+                <fragment
+                    android:id="@+id/forecast_detail"
+                    android:name="com.itrifonov.weatherviewer.ForecastDetailFragment"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    tools:layout="@layout/fragment_forecast_detail" />
+
+            </LinearLayout>
+
+        </LinearLayout>
+
+        <TextView
+            android:id="@+id/missing_forecast"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="@android:color/background_light"
+            android:gravity="center"
+            android:text="@string/txt_no_data"
+            android:textAppearance="?android:attr/textAppearanceLarge"
+            android:visibility="visible" />
+
+    </RelativeLayout>
 
 </LinearLayout>

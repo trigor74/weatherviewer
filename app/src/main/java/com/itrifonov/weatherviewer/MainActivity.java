@@ -7,6 +7,7 @@ import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.TextView;
 
 import com.itrifonov.weatherviewer.weatherapi.WeatherForecastData;
 
@@ -34,8 +35,14 @@ public class MainActivity extends AppCompatActivity
 
         mPosition = -1;
         mWeatherForecast = WeatherForecastData.getInstance(this);
+        TextView view = (TextView) findViewById(R.id.missing_forecast);
         if (mWeatherForecast.getWeatherForecastList() != null) {
             mPosition = 0;
+            if (view != null)
+                view.setVisibility(TextView.INVISIBLE);
+        } else {
+            if (view != null)
+                view.setVisibility(TextView.VISIBLE);
         }
 
         ForecastDetailFragment detailFragment = (ForecastDetailFragment) getSupportFragmentManager()
@@ -44,13 +51,15 @@ public class MainActivity extends AppCompatActivity
         if (savedInstanceState != null) {
             mPosition = savedInstanceState.getInt(STATE_POSITION, -1);
             if (isTabletLandscapeMode()) {
-                if ((findViewById(R.id.forecast_detail) != null) && (detailFragment != null)) {
+                if ((findViewById(R.id.forecast_detail) != null) && (detailFragment != null) && (mPosition != -1)) {
                     detailFragment.update(mPosition);
                 }
             } else {
-                Intent intent = new Intent(this, DetailActivity.class);
-                intent.putExtra(DetailActivity.ARG_INDEX, mPosition);
-                startActivity(intent);
+                if (mPosition != -1) {
+                    Intent intent = new Intent(this, DetailActivity.class);
+                    intent.putExtra(DetailActivity.ARG_INDEX, mPosition);
+                    startActivity(intent);
+                }
             }
         }
     }
@@ -112,8 +121,12 @@ public class MainActivity extends AppCompatActivity
     public void onWeatherForecastUpdated() {
         if ((mPosition == -1) && (mWeatherForecast.getWeatherForecastList() != null))
             mPosition = 0;
-
-        if (isTabletLandscapeMode()) {
+        if (mWeatherForecast.getWeatherForecastList() != null) {
+            TextView view = (TextView) findViewById(R.id.missing_forecast);
+            if (view != null)
+                view.setVisibility(TextView.INVISIBLE);
+        }
+        if (isTabletLandscapeMode() && (mPosition >= 0)) {
             ForecastDetailFragment detailFragment = (ForecastDetailFragment) getSupportFragmentManager()
                     .findFragmentById(R.id.forecast_detail);
             if ((findViewById(R.id.forecast_detail) != null) && (detailFragment != null)) {

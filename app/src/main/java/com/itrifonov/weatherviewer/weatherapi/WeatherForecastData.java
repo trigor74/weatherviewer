@@ -180,6 +180,8 @@ public class WeatherForecastData {
                     item.weather[0].iconBitmap = bitmap;
                 }
             } catch (IOException e) {
+                updateState = -1;
+                mIsUpdateInProgress = false;
                 e.printStackTrace();
             }
             return openweathermapResult;
