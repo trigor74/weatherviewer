@@ -35,13 +35,21 @@
         </LinearLayout>
 
         <TextView
-            android:id="@+id/missing_forecast"
+            android:id="@+id/text_view_missing_forecast"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:background="@android:color/background_light"
             android:gravity="center"
             android:text="@string/txt_no_data"
             android:textAppearance="?android:attr/textAppearanceLarge"
+            android:visibility="visible" />
+
+        <ProgressBar
+            android:id="@+id/progress_missing_forecast"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            style="@android:style/Widget.Holo.ProgressBar.Large"
             android:visibility="visible" />
 
     </FrameLayout>

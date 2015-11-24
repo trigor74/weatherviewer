@@ -110,14 +110,14 @@ public class ForecastDetailFragment extends Fragment {
                 rain.setVisibility(View.VISIBLE);
                 rain.setText(getString(R.string.txt_rain, item.getRain()));
             } else {
-                rain.setVisibility(View.INVISIBLE);
+                rain.setVisibility(View.GONE);
                 rain.setText("");
             }
             if ((item.getSnow() != null) && !item.getSnow().isEmpty()) {
                 snow.setVisibility(View.VISIBLE);
                 snow.setText(getString(R.string.txt_snow, item.getSnow()));
             } else {
-                snow.setVisibility(View.INVISIBLE);
+                snow.setVisibility(View.GONE);
                 snow.setText("");
             }
 

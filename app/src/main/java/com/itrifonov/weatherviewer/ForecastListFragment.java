@@ -65,7 +65,6 @@ public class ForecastListFragment extends Fragment
 
         swipeRefreshLayout = (SwipeRefreshLayout) view.findViewById(R.id.swipe_refresh_layout);
         swipeRefreshLayout.setOnRefreshListener(this);
-        swipeRefreshLayout.setColorSchemeResources(R.color.orange, R.color.green, R.color.blue);
 
         // https://yassirh.com/2014/05/how-to-use-swiperefreshlayout-the-right-way/
         mListView.setOnScrollListener(new AbsListView.OnScrollListener() {

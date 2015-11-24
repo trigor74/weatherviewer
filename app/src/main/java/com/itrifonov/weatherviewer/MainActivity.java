@@ -7,6 +7,8 @@ import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.itrifonov.weatherviewer.weatherapi.WeatherForecastData;
@@ -35,14 +37,19 @@ public class MainActivity extends AppCompatActivity
 
         mPosition = -1;
         mWeatherForecast = WeatherForecastData.getInstance(this);
-        TextView view = (TextView) findViewById(R.id.missing_forecast);
+        TextView textView = (TextView) findViewById(R.id.text_view_missing_forecast);
+        ProgressBar progress = (ProgressBar) findViewById(R.id.progress_missing_forecast);
         if (mWeatherForecast.getWeatherForecastList() != null) {
             mPosition = 0;
-            if (view != null)
-                view.setVisibility(TextView.INVISIBLE);
+            if (textView != null)
+                textView.setVisibility(TextView.INVISIBLE);
+            if (progress != null)
+                progress.setVisibility(TextView.INVISIBLE);
         } else {
-            if (view != null)
-                view.setVisibility(TextView.VISIBLE);
+            if (textView != null)
+                textView.setVisibility(TextView.VISIBLE);
+            if (progress != null)
+                progress.setVisibility(TextView.VISIBLE);
         }
 
         ForecastDetailFragment detailFragment = (ForecastDetailFragment) getSupportFragmentManager()
@@ -77,6 +84,10 @@ public class MainActivity extends AppCompatActivity
                 finish();
                 return true;
             case R.id.action_refresh:
+                TextView textView = (TextView) findViewById(R.id.text_view_missing_forecast);
+                ProgressBar progress = (ProgressBar) findViewById(R.id.progress_missing_forecast);
+                if ((textView != null) && (textView.getVisibility() == View.VISIBLE) && (progress != null))
+                    progress.setVisibility(TextView.VISIBLE);
                 ((ForecastListFragment) getSupportFragmentManager().findFragmentById(R.id.forecast_list))
                         .updateWeatherForecast();
                 return true;
@@ -119,12 +130,15 @@ public class MainActivity extends AppCompatActivity
 
     @Override
     public void onWeatherForecastUpdated() {
+        ProgressBar progress = (ProgressBar) findViewById(R.id.progress_missing_forecast);
+        if (progress != null)
+            progress.setVisibility(TextView.INVISIBLE);
         if ((mPosition == -1) && (mWeatherForecast.getWeatherForecastList() != null))
             mPosition = 0;
         if (mWeatherForecast.getWeatherForecastList() != null) {
-            TextView view = (TextView) findViewById(R.id.missing_forecast);
-            if (view != null)
-                view.setVisibility(TextView.INVISIBLE);
+            TextView textView = (TextView) findViewById(R.id.text_view_missing_forecast);
+            if (textView != null)
+                textView.setVisibility(TextView.INVISIBLE);
         }
         if (isTabletLandscapeMode() && (mPosition >= 0)) {
             ForecastDetailFragment detailFragment = (ForecastDetailFragment) getSupportFragmentManager()
