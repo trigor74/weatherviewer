@@ -31,33 +31,48 @@ public class WeatherAdapter extends ArrayAdapter<ForecastListItem> {
         this.layoutResourceId = R.layout.weather_forecast_list_item;
     }
 
+    static class ViewHolderItem {
+        TextView time;
+        TextView dayOfWeek;
+        TextView date;
+        TextView temp;
+        ImageView icon;
+        TextView weather;
+    }
+
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
         ForecastListItem item = getItem(position);
+
+        ViewHolderItem viewHolder;
+
         if (convertView == null) {
             convertView = LayoutInflater.from(context).inflate(layoutResourceId, parent, false);
+
+            viewHolder = new ViewHolderItem();
+
+            viewHolder.time = (TextView) convertView.findViewById(R.id.forecast_item_time);
+            viewHolder.dayOfWeek = (TextView) convertView.findViewById(R.id.forecast_item_day_of_week);
+            viewHolder.date = (TextView) convertView.findViewById(R.id.forecast_item_date);
+            viewHolder.temp = (TextView) convertView.findViewById(R.id.forecast_item_temp);
+            viewHolder.icon = (ImageView) convertView.findViewById(R.id.forecast_item_icon);
+            viewHolder.weather = (TextView) convertView.findViewById(R.id.forecast_item_description);
+
+            convertView.setTag(viewHolder);
+        } else {
+            viewHolder = (ViewHolderItem) convertView.getTag();
         }
 
-        long timestamp = item.dt * 1000L;
-        TextView time = (TextView) convertView.findViewById(R.id.forecast_item_time);
-        time.setText(DateFormat.getTimeFormat(context).format(timestamp));
-
-        TextView dayOfWeek = (TextView) convertView.findViewById(R.id.forecast_item_day_of_week);
-        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("EEEE");
-        dayOfWeek.setText(simpleDateFormat.format(timestamp));
-
-        TextView date = (TextView) convertView.findViewById(R.id.forecast_item_date);
-        date.setText(DateFormat.getMediumDateFormat(context).format(timestamp));
-
-        TextView temp = (TextView) convertView.findViewById(R.id.forecast_item_temp);
-        temp.setText(getTemp(item.main.temp));
-
-        ImageView icon = (ImageView) convertView.findViewById(R.id.forecast_item_icon);
-        icon.setImageBitmap(item.weather[0].iconBitmap);
-
-        TextView weather = (TextView) convertView.findViewById(R.id.forecast_item_description);
-        weather.setText(item.weather[0].description);
-
+        if (item != null) {
+            long timestamp = item.dt * 1000L;
+            viewHolder.time.setText(DateFormat.getTimeFormat(context).format(timestamp));
+            SimpleDateFormat simpleDateFormat = new SimpleDateFormat("EEEE");
+            viewHolder.dayOfWeek.setText(simpleDateFormat.format(timestamp));
+            viewHolder.date.setText(DateFormat.getMediumDateFormat(context).format(timestamp));
+            viewHolder.temp.setText(getTemp(item.main.temp));
+            viewHolder.icon.setImageBitmap(item.weather[0].iconBitmap);
+            viewHolder.weather.setText(item.weather[0].description);
+        }
         return convertView;
     }
 
