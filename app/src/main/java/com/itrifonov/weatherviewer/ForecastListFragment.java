@@ -22,7 +22,7 @@ public class ForecastListFragment extends Fragment
         implements WeatherForecastData.OnWeatherForecastUpdatedListener,
         SwipeRefreshLayout.OnRefreshListener {
 
-    private WeatherForecastData weatherForecastData;
+    private WeatherForecastData mWeatherForecast;
     private ListView mListView;
     private WeatherAdapter mAdapter;
     private SwipeRefreshLayout swipeRefreshLayout;
@@ -42,7 +42,7 @@ public class ForecastListFragment extends Fragment
             throw new ClassCastException(context.toString()
                     + " must implement OnHeadlineSelectedListener");
         }
-        weatherForecastData = WeatherForecastData.getInstance(this);
+        mWeatherForecast = WeatherForecastData.getInstance(this);
     }
 
     @Override
@@ -94,11 +94,11 @@ public class ForecastListFragment extends Fragment
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
 
-        weatherForecastData.setCityName("cherkassy,ua");
-        if (weatherForecastData.getWeatherForecastList() == null) {
+        mWeatherForecast.setCityName("cherkassy,ua");
+        if (mWeatherForecast.getWeatherForecastList() == null) {
             updateWeatherForecast();
         } else {
-            mAdapter = new WeatherAdapter(getActivity(), weatherForecastData.getWeatherForecastList());
+            mAdapter = new WeatherAdapter(getActivity(), mWeatherForecast.getWeatherForecastList());
             if (mAdapter != null)
                 mListView.setAdapter(mAdapter);
         }
@@ -113,12 +113,12 @@ public class ForecastListFragment extends Fragment
 
     public void updateWeatherForecast() {
         swipeRefreshLayout.setRefreshing(true);
-        weatherForecastData.reloadData();
+        mWeatherForecast.reloadData();
     }
 
     @Override
     public void onWeatherForecastUpdated() {
-        ArrayList<ForecastListItem> list = weatherForecastData.getWeatherForecastList();
+        ArrayList<ForecastListItem> list = mWeatherForecast.getWeatherForecastList();
         if (list != null) {
             if (mAdapter == null) {
                 mAdapter = new WeatherAdapter(getActivity(), list);
@@ -136,5 +136,12 @@ public class ForecastListFragment extends Fragment
     @Override
     public void onRefresh() {
         updateWeatherForecast();
+    }
+
+    @Override
+    public void onDetach() {
+        if (mWeatherForecast != null)
+            mWeatherForecast.removeOnWeatherForecastUpdatedListner(this);
+        super.onDetach();
     }
 }
