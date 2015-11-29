@@ -58,7 +58,7 @@
                     android:id="@+id/forecast_detail_icon"
                     android:layout_width="90dp"
                     android:layout_height="90dp"
-                    android:src="@android:drawable/ic_dialog_alert" />
+                    android:src="@android:color/transparent" />
 
                 <TextView
                     android:id="@+id/forecast_detail_temp"

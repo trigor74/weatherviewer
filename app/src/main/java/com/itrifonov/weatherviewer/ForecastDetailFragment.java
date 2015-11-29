@@ -10,10 +10,12 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.itrifonov.weatherviewer.weatherapi.ForecastListItem;
-import com.itrifonov.weatherviewer.weatherapi.WeatherForecastData;
+import com.itrifonov.weatherviewer.weatherapi.models.ForecastListItem;
 
 import java.text.SimpleDateFormat;
+
+import io.realm.Realm;
+import io.realm.RealmResults;
 
 public class ForecastDetailFragment extends Fragment {
 
@@ -34,7 +36,7 @@ public class ForecastDetailFragment extends Fragment {
     private TextView clouds;
     private TextView rain;
     private TextView snow;
-
+    private Realm realm;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -43,6 +45,7 @@ public class ForecastDetailFragment extends Fragment {
         if (getArguments() != null && getArguments().containsKey(ARG_INDEX)) {
             mIndex = getArguments().getInt(ARG_INDEX, -1);
         }
+        realm = Realm.getDefaultInstance();
     }
 
     @Nullable
@@ -87,35 +90,43 @@ public class ForecastDetailFragment extends Fragment {
         mIndex = index;
         if (mIndex == -1)
             return;
-        if (WeatherForecastData.getInstance().getWeatherForecastList() == null)
+        if (realm == null)
             return;
-        ForecastListItem item = WeatherForecastData.getInstance().getWeatherForecastList().get(mIndex);
+        RealmResults<ForecastListItem> realmResults = realm.allObjects(ForecastListItem.class);
+        if (realmResults.size() == 0)
+            return;
+
+        ForecastListItem item = realmResults.get(mIndex);
         try {
-            long timestamp = item.getTimestamp() * 1000L;
+            long timestamp = item.getTimeStamp() * 1000L;
             SimpleDateFormat simpleDateFormat = new SimpleDateFormat("EEEE");
             dayOfWeek.setText(simpleDateFormat.format(timestamp));
             time.setText(DateFormat.getTimeFormat(getContext()).format(timestamp));
             date.setText(DateFormat.getMediumDateFormat(getContext()).format(timestamp));
-            icon.setImageBitmap(item.getIconBitmap());
-            temp.setText(getTemp(item.getTemp()));
-            description.setText(item.getDescription());
-            temp_min.setText(getString(R.string.txt_temp_min, getTemp(item.getTempMin())));
-            temp_max.setText(getString(R.string.txt_temp_max, getTemp(item.getTempMax())));
-            pressure.setText(getString(R.string.txt_pressure, item.getPressure()));
-            humidity.setText(getString(R.string.txt_humidity, (int) Math.round(item.getHumidity())));
-            wind_speed.setText(getString(R.string.txt_wind_speed, (int) Math.round(item.getWindSpeed())));
-            wind_deg.setText(getString(R.string.txt_wind_direction, Math.round(item.getWindDeg()), item.getWindDirection()));
-            clouds.setText(getString(R.string.txt_clouds, item.getClouds()));
-            if ((item.getRain() != null) && !item.getRain().isEmpty()) {
+//            byte[] byteArray = item.getIconBitmap();
+//            icon.setImageBitmap(BitmapFactory.decodeByteArray(byteArray, 0, byteArray.length));
+            temp.setText(getTemp(item.getConditions().getTemp()));
+            description.setText(item.getWeather().get(0).getDescription());
+            temp_min.setText(getString(R.string.txt_temp_min, getTemp(item.getConditions().getTempMin())));
+            temp_max.setText(getString(R.string.txt_temp_max, getTemp(item.getConditions().getTempMax())));
+            pressure.setText(getString(R.string.txt_pressure, item.getConditions().getPressure()));
+            humidity.setText(getString(R.string.txt_humidity,
+                    (int) Math.round(item.getConditions().getHumidity())));
+            wind_speed.setText(getString(R.string.txt_wind_speed,
+                    (int) Math.round(item.getWind().getSpeed())));
+            wind_deg.setText(getString(R.string.txt_wind_direction,
+                    Math.round(item.getWind().getDeg()), degToDirection(item.getWind().getDeg())));
+            clouds.setText(getString(R.string.txt_clouds, item.getClouds().getCloudiness()));
+            if (!item.getRain().getM3h().isEmpty()) {
                 rain.setVisibility(View.VISIBLE);
-                rain.setText(getString(R.string.txt_rain, item.getRain()));
+                rain.setText(getString(R.string.txt_rain, item.getRain().getM3h()));
             } else {
                 rain.setVisibility(View.GONE);
                 rain.setText("");
             }
-            if ((item.getSnow() != null) && !item.getSnow().isEmpty()) {
+            if (!item.getSnow().getM3h().isEmpty()) {
                 snow.setVisibility(View.VISIBLE);
-                snow.setText(getString(R.string.txt_snow, item.getSnow()));
+                snow.setText(getString(R.string.txt_snow, item.getSnow().getM3h()));
             } else {
                 snow.setVisibility(View.GONE);
                 snow.setText("");
@@ -134,5 +145,17 @@ public class ForecastDetailFragment extends Fragment {
             return Integer.toString(i);
         }
 
+    }
+
+    private String degToDirection(float deg) {
+        int val = (int) (deg / 22.5 + .5);
+        String[] dir = {"N", "NNE", "NE", "ENE", "E", "ESE", "SE", "SSE", "S", "SSW", "SW", "WSW", "W", "WNW", "NW", "NNW"};
+        return dir[(val % 16)];
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        realm.close();
     }
 }

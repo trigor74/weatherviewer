@@ -5,6 +5,7 @@ Stage 2
 [Igor Trifonov](https://github.com/trigor74)
 
 * Task7: Threads and JSON
+* Task8: Databases
 
 #Weather Viewer
 Weather forecast for 5 days every 3 hours from http://openweathermap.org/api
@@ -12,8 +13,8 @@ Weather forecast for 5 days every 3 hours from http://openweathermap.org/api
 
 GitHub: https://github.com/trigor74/weatherviewer
 
-APK: https://www.dropbox.com/s/exvahne7kuon85v/weather.apk?dl=1
+APK: https://www.dropbox.com/s/4tfnhcm6cuipwgw/weather_v2.apk?dl=1
 
-QR: https://www.dropbox.com/s/9mscuc0qxbt6a65/weather.png?dl=0
+QR: https://www.dropbox.com/s/lujsyxgmid6pujs/weather_v2.png?dl=0
 
-![QR-Code](https://www.dropbox.com/s/9mscuc0qxbt6a65/weather.png?dl=1)
+![QR-Code](https://www.dropbox.com/s/lujsyxgmid6pujs/weather_v2.png?dl=1)

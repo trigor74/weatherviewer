@@ -11,21 +11,52 @@ import android.view.View;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
-import com.itrifonov.weatherviewer.weatherapi.WeatherForecastData;
+import com.itrifonov.weatherviewer.weatherapi.models.ForecastListItem;
+
+import io.realm.Realm;
+import io.realm.RealmChangeListener;
+import io.realm.RealmResults;
 
 public class MainActivity extends AppCompatActivity
-        implements ForecastListFragment.OnListItemSelectedListener,
-        WeatherForecastData.OnWeatherForecastUpdatedListener {
+        implements ForecastListFragment.OnListItemSelectedListener {
 
     private int mPosition;
     private static final String STATE_POSITION = "STATE_POSITION";
-    private WeatherForecastData mWeatherForecast;
-
+    private Realm realm;
+    private RealmResults<ForecastListItem> realmResults;
+    private RealmChangeListener callback = new RealmChangeListener() {
+        @Override
+        public void onChange() {
+            ProgressBar progress = (ProgressBar) findViewById(R.id.progress_missing_forecast);
+            if (progress != null)
+                progress.setVisibility(TextView.INVISIBLE);
+            RealmResults<ForecastListItem> realmResults = realm.allObjects(ForecastListItem.class);
+            if (realmResults.size() != 0)
+                if (mPosition == -1)
+                    mPosition = 0;
+            TextView textMissingForecast = (TextView) findViewById(R.id.text_view_missing_forecast);
+            if (textMissingForecast != null)
+                textMissingForecast.setVisibility(TextView.INVISIBLE);
+            if (isTabletLandscapeMode() && (mPosition >= 0)) {
+                ForecastDetailFragment detailFragment = (ForecastDetailFragment) getSupportFragmentManager()
+                        .findFragmentById(R.id.forecast_detail);
+                if ((findViewById(R.id.forecast_detail) != null) && (detailFragment != null)) {
+                    detailFragment.update(mPosition);
+                }
+            }
+        }
+    };
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        realm = Realm.getDefaultInstance();
+        realmResults = realm.where(ForecastListItem.class).findAllAsync();
+        realmResults.addChangeListener(callback);
+
+        checkSettings();
 
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
@@ -36,18 +67,18 @@ public class MainActivity extends AppCompatActivity
         }
 
         mPosition = -1;
-        mWeatherForecast = WeatherForecastData.getInstance(this);
-        TextView textView = (TextView) findViewById(R.id.text_view_missing_forecast);
+        TextView textMissingForecast = (TextView) findViewById(R.id.text_view_missing_forecast);
         ProgressBar progress = (ProgressBar) findViewById(R.id.progress_missing_forecast);
-        if (mWeatherForecast.getWeatherForecastList() != null) {
+        RealmResults<ForecastListItem> realmResults = realm.allObjects(ForecastListItem.class);
+        if (realmResults.size() != 0) {
             mPosition = 0;
-            if (textView != null)
-                textView.setVisibility(TextView.INVISIBLE);
+            if (textMissingForecast != null)
+                textMissingForecast.setVisibility(TextView.INVISIBLE);
             if (progress != null)
                 progress.setVisibility(TextView.INVISIBLE);
         } else {
-            if (textView != null)
-                textView.setVisibility(TextView.VISIBLE);
+            if (textMissingForecast != null)
+                textMissingForecast.setVisibility(TextView.VISIBLE);
             if (progress != null)
                 progress.setVisibility(TextView.VISIBLE);
         }
@@ -84,9 +115,9 @@ public class MainActivity extends AppCompatActivity
                 finish();
                 return true;
             case R.id.action_refresh:
-                TextView textView = (TextView) findViewById(R.id.text_view_missing_forecast);
+                TextView textMissingForecast = (TextView) findViewById(R.id.text_view_missing_forecast);
                 ProgressBar progress = (ProgressBar) findViewById(R.id.progress_missing_forecast);
-                if ((textView != null) && (textView.getVisibility() == View.VISIBLE) && (progress != null))
+                if ((textMissingForecast != null) && (textMissingForecast.getVisibility() == View.VISIBLE) && (progress != null))
                     progress.setVisibility(TextView.VISIBLE);
                 ((ForecastListFragment) getSupportFragmentManager().findFragmentById(R.id.forecast_list))
                         .updateWeatherForecast();
@@ -128,31 +159,24 @@ public class MainActivity extends AppCompatActivity
         return getResources().getBoolean(R.bool.is_tablet_landscape);
     }
 
-    @Override
-    public void onWeatherForecastUpdated() {
-        ProgressBar progress = (ProgressBar) findViewById(R.id.progress_missing_forecast);
-        if (progress != null)
-            progress.setVisibility(TextView.INVISIBLE);
-        if ((mPosition == -1) && (mWeatherForecast.getWeatherForecastList() != null))
-            mPosition = 0;
-        if (mWeatherForecast.getWeatherForecastList() != null) {
-            TextView textView = (TextView) findViewById(R.id.text_view_missing_forecast);
-            if (textView != null)
-                textView.setVisibility(TextView.INVISIBLE);
-        }
-        if (isTabletLandscapeMode() && (mPosition >= 0)) {
-            ForecastDetailFragment detailFragment = (ForecastDetailFragment) getSupportFragmentManager()
-                    .findFragmentById(R.id.forecast_detail);
-            if ((findViewById(R.id.forecast_detail) != null) && (detailFragment != null)) {
-                detailFragment.update(mPosition);
-            }
+    private void checkSettings() {
+        RealmResults<Settings> results = realm.allObjects(Settings.class);
+        if (results.size() == 0) {
+            realm.beginTransaction();
+            Settings settings = realm.createObject(Settings.class);
+            settings.setApiKey("28bfbe7a35614f03ddaaf3b091f2a414");
+            settings.setCity("Cherkasy,UA");
+            settings.setUnits("metric");
+            settings.setLastUpdate(-1);
+            settings.setDeleteOldData(true);
+            realm.commitTransaction();
         }
     }
 
     @Override
     protected void onDestroy() {
-        if (mWeatherForecast != null)
-            mWeatherForecast.removeOnWeatherForecastUpdatedListner(this);
         super.onDestroy();
+        realmResults.removeChangeListener(callback);
+        realm.close();
     }
 }

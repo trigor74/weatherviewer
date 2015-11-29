@@ -12,20 +12,28 @@ import android.widget.AbsListView;
 import android.widget.AdapterView;
 import android.widget.ListView;
 
-import com.itrifonov.weatherviewer.weatherapi.ForecastListItem;
+import com.itrifonov.weatherviewer.weatherapi.models.ForecastListItem;
 import com.itrifonov.weatherviewer.weatherapi.WeatherAdapter;
-import com.itrifonov.weatherviewer.weatherapi.WeatherForecastData;
+import com.itrifonov.weatherviewer.weatherapi.WeatherForecastUpdater;
 
-import java.util.ArrayList;
+import io.realm.Realm;
+import io.realm.RealmChangeListener;
+import io.realm.RealmResults;
 
 public class ForecastListFragment extends Fragment
-        implements WeatherForecastData.OnWeatherForecastUpdatedListener,
-        SwipeRefreshLayout.OnRefreshListener {
+        implements SwipeRefreshLayout.OnRefreshListener {
 
-    private WeatherForecastData mWeatherForecast;
     private ListView mListView;
     private WeatherAdapter mAdapter;
     private SwipeRefreshLayout swipeRefreshLayout;
+    private Realm realm;
+    private RealmResults<ForecastListItem> realmResults;
+    private RealmChangeListener callback = new RealmChangeListener() {
+        @Override
+        public void onChange() {
+            swipeRefreshLayout.setRefreshing(false);
+        }
+    };
 
     public interface OnListItemSelectedListener {
         void onListItemSelected(int position);
@@ -42,13 +50,15 @@ public class ForecastListFragment extends Fragment
             throw new ClassCastException(context.toString()
                     + " must implement OnHeadlineSelectedListener");
         }
-        mWeatherForecast = WeatherForecastData.getInstance(this);
     }
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setRetainInstance(true);
+        realm = Realm.getDefaultInstance();
+        realmResults = realm.where(ForecastListItem.class).findAllAsync();
+        realmResults.addChangeListener(callback);
     }
 
     @Nullable
@@ -94,14 +104,13 @@ public class ForecastListFragment extends Fragment
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
 
-        mWeatherForecast.setCityName("cherkassy,ua");
-        if (mWeatherForecast.getWeatherForecastList() == null) {
+        RealmResults<ForecastListItem> forecastList = realm.where(ForecastListItem.class).findAll();
+        if (forecastList.size() == 0) {
             updateWeatherForecast();
-        } else {
-            mAdapter = new WeatherAdapter(getActivity(), mWeatherForecast.getWeatherForecastList());
-            if (mAdapter != null)
-                mListView.setAdapter(mAdapter);
         }
+        if (mAdapter == null)
+            mAdapter = new WeatherAdapter(getActivity(), forecastList, true);
+        mListView.setAdapter(mAdapter);
 
         mListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
@@ -113,24 +122,7 @@ public class ForecastListFragment extends Fragment
 
     public void updateWeatherForecast() {
         swipeRefreshLayout.setRefreshing(true);
-        mWeatherForecast.reloadData();
-    }
-
-    @Override
-    public void onWeatherForecastUpdated() {
-        ArrayList<ForecastListItem> list = mWeatherForecast.getWeatherForecastList();
-        if (list != null) {
-            if (mAdapter == null) {
-                mAdapter = new WeatherAdapter(getActivity(), list);
-                if (mListView != null)
-                    mListView.setAdapter(mAdapter);
-            } else {
-                mAdapter.clear();
-                mAdapter.addAll(list);
-                mAdapter.notifyDataSetChanged();
-            }
-        }
-        swipeRefreshLayout.setRefreshing(false);
+        new WeatherForecastUpdater().execute();
     }
 
     @Override
@@ -139,9 +131,9 @@ public class ForecastListFragment extends Fragment
     }
 
     @Override
-    public void onDetach() {
-        if (mWeatherForecast != null)
-            mWeatherForecast.removeOnWeatherForecastUpdatedListner(this);
-        super.onDetach();
+    public void onDestroy() {
+        super.onDestroy();
+        realmResults.removeChangeListener(callback);
+        realm.close();
     }
 }

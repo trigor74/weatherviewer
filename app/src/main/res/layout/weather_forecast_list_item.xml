@@ -72,7 +72,7 @@
             android:layout_width="50dp"
             android:layout_height="50dp"
             android:layout_gravity="right"
-            android:src="@drawable/icon_10d" />
+            android:src="@android:color/transparent" />
 
         <TextView
             android:id="@+id/forecast_item_temp"

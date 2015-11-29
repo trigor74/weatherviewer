@@ -5,33 +5,21 @@ import android.text.format.DateFormat;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ArrayAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.itrifonov.weatherviewer.R;
+import com.itrifonov.weatherviewer.weatherapi.models.ForecastListItem;
+import com.itrifonov.weatherviewer.weatherapi.models.WeatherIcon;
 
 import java.text.SimpleDateFormat;
-import java.util.List;
 
-public class WeatherAdapter extends ArrayAdapter<ForecastListItem> {
+import io.realm.RealmBaseAdapter;
+import io.realm.RealmResults;
 
-    private final Context context;
-    private final int layoutResourceId;
+public class WeatherAdapter extends RealmBaseAdapter<ForecastListItem> {
 
-    public WeatherAdapter(Context context, int resource, List<ForecastListItem> objects) {
-        super(context, resource, objects);
-        this.context = context;
-        this.layoutResourceId = resource;
-    }
-
-    public WeatherAdapter(Context context, List<ForecastListItem> objects) {
-        super(context, R.layout.weather_forecast_list_item, objects);
-        this.context = context;
-        this.layoutResourceId = R.layout.weather_forecast_list_item;
-    }
-
-    static class ViewHolderItem {
+    private static class ViewHolderItem {
         TextView time;
         TextView dayOfWeek;
         TextView date;
@@ -40,14 +28,18 @@ public class WeatherAdapter extends ArrayAdapter<ForecastListItem> {
         TextView weather;
     }
 
+    public WeatherAdapter(Context context, RealmResults<ForecastListItem> objects, boolean automaticUpdate) {
+        super(context, objects, automaticUpdate);
+    }
+
+
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
-        ForecastListItem item = getItem(position);
-
         ViewHolderItem viewHolder;
 
         if (convertView == null) {
-            convertView = LayoutInflater.from(context).inflate(layoutResourceId, parent, false);
+            convertView = LayoutInflater.from(context)
+                    .inflate(R.layout.weather_forecast_list_item, parent, false);
 
             viewHolder = new ViewHolderItem();
 
@@ -63,17 +55,24 @@ public class WeatherAdapter extends ArrayAdapter<ForecastListItem> {
             viewHolder = (ViewHolderItem) convertView.getTag();
         }
 
+        ForecastListItem item = getItem(position);
+
         if (item != null) {
-            long timestamp = item.dt * 1000L;
+            long timestamp = item.getTimeStamp() * 1000L;
             viewHolder.time.setText(DateFormat.getTimeFormat(context).format(timestamp));
             SimpleDateFormat simpleDateFormat = new SimpleDateFormat("EEEE");
             viewHolder.dayOfWeek.setText(simpleDateFormat.format(timestamp));
             viewHolder.date.setText(DateFormat.getMediumDateFormat(context).format(timestamp));
-            viewHolder.temp.setText(getTemp(item.main.temp));
-            viewHolder.icon.setImageBitmap(item.weather[0].iconBitmap);
-            viewHolder.weather.setText(item.weather[0].description);
+            viewHolder.temp.setText(getTemp(item.getConditions().getTemp()));
+//            byte[] byteArray = item.getIconBitmap();
+//            viewHolder.icon.setImageBitmap(BitmapFactory.decodeByteArray(byteArray,0, byteArray.length));
+            viewHolder.weather.setText(item.getWeather().get(0).getDescription());
         }
         return convertView;
+    }
+
+    public RealmResults<ForecastListItem> getRealmResults() {
+        return realmResults;
     }
 
     private String getTemp(float f) {

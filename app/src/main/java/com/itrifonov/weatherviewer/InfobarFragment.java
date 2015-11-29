@@ -1,6 +1,5 @@
 package com.itrifonov.weatherviewer;
 
-import android.content.Context;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
@@ -9,26 +8,32 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
-import com.itrifonov.weatherviewer.weatherapi.WeatherForecastData;
-
 import java.text.DateFormat;
 
-public class InfobarFragment extends Fragment implements WeatherForecastData.OnWeatherForecastUpdatedListener {
+import io.realm.Realm;
+import io.realm.RealmChangeListener;
+import io.realm.RealmResults;
 
-    private WeatherForecastData mWeatherForecast;
+public class InfobarFragment extends Fragment {
+
     private TextView mCityName;
     private TextView mLastUpdated;
-
-    @Override
-    public void onAttach(Context context) {
-        super.onAttach(context);
-        mWeatherForecast = WeatherForecastData.getInstance(this);
-    }
+    private Realm realm;
+    private RealmResults<Settings> realmResults;
+    private RealmChangeListener callback = new RealmChangeListener() {
+        @Override
+        public void onChange() {
+            updateInfo();
+        }
+    };
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setRetainInstance(true);
+        realm = Realm.getDefaultInstance();
+        realmResults = realm.where(Settings.class).findAllAsync();
+        realmResults.addChangeListener(callback);
     }
 
     @Nullable
@@ -48,27 +53,29 @@ public class InfobarFragment extends Fragment implements WeatherForecastData.OnW
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
-        onWeatherForecastUpdated();
+        updateInfo();
     }
 
     @Override
-    public void onWeatherForecastUpdated() {
-        if (mWeatherForecast != null) {
-            if (mCityName != null)
-                mCityName.setText(mWeatherForecast.getCityName());
-            long timestamp = mWeatherForecast.getUpdateState() * 1000L;
-            if (mLastUpdated != null) {
-                mLastUpdated.setText(getString(R.string.txt_last_update,
-                        DateFormat.getDateTimeInstance().format(timestamp)));
+    public void onDestroy() {
+        super.onDestroy();
+        realmResults.removeChangeListener(callback);
+        realm.close();
+    }
+
+    private void updateInfo() {
+        if (realm != null) {
+            RealmResults<Settings> results = realm.allObjects(Settings.class);
+            if (results.size() != 0) {
+                Settings settings = results.first();
+                if (mLastUpdated != null) {
+                    mLastUpdated.setText(getString(R.string.txt_last_update,
+                            DateFormat.getDateTimeInstance().format(settings.getLastUpdate())));
+                }
+                if (mCityName != null) {
+                    mCityName.setText(settings.getCity());
+                }
             }
         }
-    }
-
-    @Override
-    public void onDetach() {
-        if (mWeatherForecast != null) {
-            mWeatherForecast.removeOnWeatherForecastUpdatedListner(this);
-        }
-        super.onDetach();
     }
 }
