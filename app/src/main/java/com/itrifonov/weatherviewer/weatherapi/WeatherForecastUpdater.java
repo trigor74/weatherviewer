@@ -8,7 +8,6 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.itrifonov.weatherviewer.Settings;
 import com.itrifonov.weatherviewer.weatherapi.models.ForecastListItem;
-import com.itrifonov.weatherviewer.weatherapi.models.WeatherIcon;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
@@ -23,11 +22,10 @@ import io.realm.RealmResults;
 public class WeatherForecastUpdater extends AsyncTask<Void, Void, Void> {
 
     private String BASE_URL = "http://api.openweathermap.org/data/2.5/forecast?";
-    private String IMG_URL = "http://openweathermap.org/img/w/";
-    private String IMG_EXT = ".png";
     private String API_KEY = "&appid=";
     private String EXTRA_KEY = "&units=";
-
+    private String IMG_URL = "http://openweathermap.org/img/w/";
+    private String IMG_EXT = ".png";
 
     @Override
     protected Void doInBackground(Void... params) {
@@ -71,16 +69,6 @@ public class WeatherForecastUpdater extends AsyncTask<Void, Void, Void> {
                     connection.disconnect();
                     connection = null;
 
-                    realm.beginTransaction();
-
-                    if (settings.getDeleteOldData()) {
-                        Long timeStamp = openweathermapResult.getWeatherForecastList().get(0).getTimeStamp();
-                        RealmResults<ForecastListItem> result = realm.where(ForecastListItem.class)
-                                .lessThan("timeStamp", timeStamp).findAll();
-                        result.clear();
-                    }
-                    realm.copyToRealmOrUpdate(openweathermapResult.getWeatherForecastList());
-
                     for (final ForecastListItem item : openweathermapResult.getWeatherForecastList()) {
                         ByteArrayOutputStream buffer = new ByteArrayOutputStream();
                         String iconName = item.getWeather().get(0).getIconName();
@@ -96,17 +84,27 @@ public class WeatherForecastUpdater extends AsyncTask<Void, Void, Void> {
                         } catch (IOException e) {
                             e.printStackTrace();
                         }
-                        WeatherIcon weatherIcon = new WeatherIcon();
-                        weatherIcon.setIconName(iconName);
-                        weatherIcon.setIconData(buffer.toByteArray());
-                        realm.copyToRealmOrUpdate(weatherIcon);
+                        item.getWeather().get(0).setIconData(buffer.toByteArray());
                     }
 
+                    realm.beginTransaction();
+
+                    if (settings.getDeleteOldData()) {
+                        Long timeStamp = openweathermapResult.getWeatherForecastList().get(0).getTimeStamp();
+                        RealmResults<ForecastListItem> result = realm.where(ForecastListItem.class)
+                                .lessThan("timeStamp", timeStamp).findAll();
+                        result.clear();
+                    }
+
+                    realm.copyToRealmOrUpdate(openweathermapResult.getWeatherForecastList());
                     realm.allObjects(Settings.class).first().setLastUpdate(System.currentTimeMillis());
+
                     realm.commitTransaction();
 
                 } catch (IOException e) {
-                    realm.cancelTransaction();
+                    if (realm.isInTransaction())
+                        realm.cancelTransaction();
+                    realm.refresh();
                     e.printStackTrace();
                 }
             }

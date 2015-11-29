@@ -1,5 +1,6 @@
 package com.itrifonov.weatherviewer;
 
+import android.graphics.BitmapFactory;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
@@ -103,8 +104,9 @@ public class ForecastDetailFragment extends Fragment {
             dayOfWeek.setText(simpleDateFormat.format(timestamp));
             time.setText(DateFormat.getTimeFormat(getContext()).format(timestamp));
             date.setText(DateFormat.getMediumDateFormat(getContext()).format(timestamp));
-//            byte[] byteArray = item.getIconBitmap();
-//            icon.setImageBitmap(BitmapFactory.decodeByteArray(byteArray, 0, byteArray.length));
+            byte[] iconData = item.getWeather().get(0).getIconData();
+            if (iconData != null && iconData.length > 0)
+                icon.setImageBitmap(BitmapFactory.decodeByteArray(iconData, 0, iconData.length));
             temp.setText(getTemp(item.getConditions().getTemp()));
             description.setText(item.getWeather().get(0).getDescription());
             temp_min.setText(getString(R.string.txt_temp_min, getTemp(item.getConditions().getTempMin())));

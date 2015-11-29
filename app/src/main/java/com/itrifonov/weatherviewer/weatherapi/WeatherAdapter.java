@@ -1,6 +1,7 @@
 package com.itrifonov.weatherviewer.weatherapi;
 
 import android.content.Context;
+import android.graphics.BitmapFactory;
 import android.text.format.DateFormat;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -10,7 +11,6 @@ import android.widget.TextView;
 
 import com.itrifonov.weatherviewer.R;
 import com.itrifonov.weatherviewer.weatherapi.models.ForecastListItem;
-import com.itrifonov.weatherviewer.weatherapi.models.WeatherIcon;
 
 import java.text.SimpleDateFormat;
 
@@ -31,7 +31,6 @@ public class WeatherAdapter extends RealmBaseAdapter<ForecastListItem> {
     public WeatherAdapter(Context context, RealmResults<ForecastListItem> objects, boolean automaticUpdate) {
         super(context, objects, automaticUpdate);
     }
-
 
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
@@ -64,8 +63,9 @@ public class WeatherAdapter extends RealmBaseAdapter<ForecastListItem> {
             viewHolder.dayOfWeek.setText(simpleDateFormat.format(timestamp));
             viewHolder.date.setText(DateFormat.getMediumDateFormat(context).format(timestamp));
             viewHolder.temp.setText(getTemp(item.getConditions().getTemp()));
-//            byte[] byteArray = item.getIconBitmap();
-//            viewHolder.icon.setImageBitmap(BitmapFactory.decodeByteArray(byteArray,0, byteArray.length));
+            byte[] iconData = item.getWeather().get(0).getIconData();
+            if (iconData != null && iconData.length > 0)
+                viewHolder.icon.setImageBitmap(BitmapFactory.decodeByteArray(iconData, 0, iconData.length));
             viewHolder.weather.setText(item.getWeather().get(0).getDescription());
         }
         return convertView;
