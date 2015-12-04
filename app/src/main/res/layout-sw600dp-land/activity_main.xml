@@ -4,7 +4,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    tools:context=".MainActivity">
+    tools:context=".activities.MainActivity">
 
     <include layout="@layout/toolbar" />
 
@@ -19,7 +19,7 @@
 
             <fragment
                 android:id="@+id/infobar"
-                android:name="com.itrifonov.weatherviewer.InfobarFragment"
+                android:name="com.itrifonov.weatherviewer.fragments.InfobarFragment"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 tools:layout="@layout/fragment_infobar" />
@@ -31,7 +31,7 @@
 
                 <fragment
                     android:id="@+id/forecast_list"
-                    android:name="com.itrifonov.weatherviewer.ForecastListFragment"
+                    android:name="com.itrifonov.weatherviewer.fragments.ForecastListFragment"
                     android:layout_width="@dimen/activity_list_width"
                     android:layout_height="match_parent"
                     tools:layout="@layout/fragment_forecast_list" />
@@ -43,7 +43,7 @@
 
                 <fragment
                     android:id="@+id/forecast_detail"
-                    android:name="com.itrifonov.weatherviewer.ForecastDetailFragment"
+                    android:name="com.itrifonov.weatherviewer.fragments.ForecastDetailFragment"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     tools:layout="@layout/fragment_forecast_detail" />

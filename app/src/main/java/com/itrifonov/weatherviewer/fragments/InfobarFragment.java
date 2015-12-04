@@ -1,4 +1,4 @@
-package com.itrifonov.weatherviewer;
+package com.itrifonov.weatherviewer.fragments;
 
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -7,6 +7,9 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
+
+import com.itrifonov.weatherviewer.R;
+import com.itrifonov.weatherviewer.models.Settings;
 
 import java.text.DateFormat;
 

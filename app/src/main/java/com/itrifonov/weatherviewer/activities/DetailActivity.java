@@ -1,9 +1,12 @@
-package com.itrifonov.weatherviewer;
+package com.itrifonov.weatherviewer.activities;
 
 import android.os.Bundle;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+
+import com.itrifonov.weatherviewer.R;
+import com.itrifonov.weatherviewer.fragments.ForecastDetailFragment;
 
 public class DetailActivity extends AppCompatActivity {
 

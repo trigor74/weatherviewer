@@ -1,4 +1,4 @@
-package com.itrifonov.weatherviewer;
+package com.itrifonov.weatherviewer.fragments;
 
 import android.graphics.BitmapFactory;
 import android.os.Bundle;
@@ -11,6 +11,7 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.itrifonov.weatherviewer.R;
 import com.itrifonov.weatherviewer.weatherapi.models.ForecastListItem;
 
 import java.text.SimpleDateFormat;

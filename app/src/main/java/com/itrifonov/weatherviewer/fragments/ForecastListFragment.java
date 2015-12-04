@@ -1,4 +1,4 @@
-package com.itrifonov.weatherviewer;
+package com.itrifonov.weatherviewer.fragments;
 
 import android.content.Context;
 import android.os.Bundle;
@@ -12,6 +12,7 @@ import android.widget.AbsListView;
 import android.widget.AdapterView;
 import android.widget.ListView;
 
+import com.itrifonov.weatherviewer.R;
 import com.itrifonov.weatherviewer.weatherapi.models.ForecastListItem;
 import com.itrifonov.weatherviewer.weatherapi.WeatherAdapter;
 import com.itrifonov.weatherviewer.weatherapi.WeatherForecastUpdater;

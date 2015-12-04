@@ -1,4 +1,4 @@
-package com.itrifonov.weatherviewer;
+package com.itrifonov.weatherviewer.models;
 
 import io.realm.RealmObject;
 

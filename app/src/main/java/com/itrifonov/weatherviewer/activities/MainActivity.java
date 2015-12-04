@@ -1,4 +1,4 @@
-package com.itrifonov.weatherviewer;
+package com.itrifonov.weatherviewer.activities;
 
 import android.content.Intent;
 import android.support.v7.app.ActionBar;
@@ -11,6 +11,10 @@ import android.view.View;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
+import com.itrifonov.weatherviewer.R;
+import com.itrifonov.weatherviewer.fragments.ForecastDetailFragment;
+import com.itrifonov.weatherviewer.fragments.ForecastListFragment;
+import com.itrifonov.weatherviewer.models.Settings;
 import com.itrifonov.weatherviewer.weatherapi.models.ForecastListItem;
 
 import io.realm.Realm;
@@ -126,7 +130,8 @@ public class MainActivity extends AppCompatActivity
                 // TODO: 18.11.2015 Add logic
                 return true;
             case R.id.action_settings:
-                // TODO: 18.11.2015 Add logic
+                Intent intent = new Intent(this, SettingsActivity.class);
+                startActivity(intent);
                 return true;
             default:
                 return super.onOptionsItemSelected(item);
