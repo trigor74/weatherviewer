@@ -2,11 +2,11 @@
 <resources>
     <color name="colorPrimary">#3F51B5</color>
     <color name="colorPrimaryDark">#303F9F</color>
-    <color name="colorAccent">#FF4081</color>
-    <color name="colorInfobarText">#FFFFFF</color>
-    <color name="colorSeparationLine">#000000</color>
-    <color name="orange">#FF9900</color>
-    <color name="green">#009900</color>
-    <color name="blue">#000099</color>
-    <color name="black">#000000</color>
+    <color name="colorPrimaryLight">#C5CAE9</color>
+    <color name="colorAccent">#03A9F4</color>
+    <color name="textColorPrimary">#FFFFFF</color>
+    <color name="textColorPrimaryLight">#000000</color>
+    <color name="textColorSecondary">#727272</color>
+    <color name="colorDivider">#B6B6B6</color>
+    <color name="textColorPrimaryDark">#B6B6B6</color>
 </resources>

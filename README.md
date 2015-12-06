@@ -6,6 +6,8 @@ Stage 2
 
 * Task7: Threads and JSON
 * Task8: Databases
+* Styles and Themes
+
 
 #Weather Viewer
 Weather forecast for 5 days every 3 hours from http://openweathermap.org/api
@@ -13,8 +15,8 @@ Weather forecast for 5 days every 3 hours from http://openweathermap.org/api
 
 GitHub: https://github.com/trigor74/weatherviewer
 
-APK: https://www.dropbox.com/s/4tfnhcm6cuipwgw/weather_v2.apk?dl=1
+APK: https://www.dropbox.com/s/vnqg51wfz8hxjti/weather_v3.apk?dl=1
 
-QR: https://www.dropbox.com/s/lujsyxgmid6pujs/weather_v2.png?dl=0
+QR: https://www.dropbox.com/s/p095e6yf79l0e79/weather_v3.png?dl=0
 
-![QR-Code](https://www.dropbox.com/s/lujsyxgmid6pujs/weather_v2.png?dl=1)
+![QR-Code](https://www.dropbox.com/s/p095e6yf79l0e79/weather_v3.png?dl=1)

@@ -23,27 +23,21 @@
 
                 <TextView
                     android:id="@+id/forecast_detail_time"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
+                    style="@style/TextStyle.Large"
                     android:layout_gravity="center"
-                    android:text=""
-                    android:textAppearance="?android:attr/textAppearanceLarge" />
+                    android:text="" />
 
                 <TextView
                     android:id="@+id/forecast_detail_day_of_week"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
+                    style="@style/TextStyle.Medium"
                     android:layout_gravity="center"
-                    android:text=""
-                    android:textAppearance="?android:attr/textAppearanceMedium" />
+                    android:text="" />
 
                 <TextView
                     android:id="@+id/forecast_detail_date"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
+                    style="@style/TextStyle.Medium"
                     android:layout_gravity="center"
-                    android:text=""
-                    android:textAppearance="?android:attr/textAppearanceMedium" />
+                    android:text="" />
 
             </LinearLayout>
 
@@ -62,99 +56,77 @@
 
                 <TextView
                     android:id="@+id/forecast_detail_temp"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text=""
-                    android:textAppearance="?android:attr/textAppearanceLarge" />
+                    style="@style/TextStyle.Large"
+                    android:text="" />
 
             </LinearLayout>
 
             <TextView
                 android:id="@+id/forecast_detail_description"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+                style="@style/TextStyle.Large"
                 android:paddingTop="5dp"
-                android:text="@string/txt_no_data"
-                android:textAppearance="?android:attr/textAppearanceLarge" />
+                android:text="@string/txt_no_data" />
 
         </LinearLayout>
 
         <View
             android:layout_width="match_parent"
             android:layout_height="1dp"
-            android:background="@color/colorSeparationLine" />
+            android:background="@color/colorDivider" />
 
         <TextView
             android:id="@+id/forecast_detail_temp_min"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            style="@style/TextStyle.Large"
             android:paddingTop="5dp"
-            android:text=""
-            android:textAppearance="?android:attr/textAppearanceLarge" />
+            android:text="" />
 
         <TextView
             android:id="@+id/forecast_detail_temp_max"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            style="@style/TextStyle.Large"
             android:paddingTop="5dp"
-            android:text=""
-            android:textAppearance="?android:attr/textAppearanceLarge" />
+            android:text="" />
 
         <TextView
             android:id="@+id/forecast_detail_pressure"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            style="@style/TextStyle.Large"
             android:paddingTop="5dp"
-            android:text=""
-            android:textAppearance="?android:attr/textAppearanceLarge" />
+            android:text="" />
 
         <TextView
             android:id="@+id/forecast_detail_humidity"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            style="@style/TextStyle.Large"
             android:paddingTop="5dp"
-            android:text=""
-            android:textAppearance="?android:attr/textAppearanceLarge" />
+            android:text="" />
 
         <TextView
             android:id="@+id/forecast_detail_wind_speed"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            style="@style/TextStyle.Large"
             android:paddingTop="5dp"
-            android:text=""
-            android:textAppearance="?android:attr/textAppearanceLarge" />
+            android:text="" />
 
         <TextView
             android:id="@+id/forecast_detail_wind_deg"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            style="@style/TextStyle.Large"
             android:paddingTop="5dp"
-            android:text=""
-            android:textAppearance="?android:attr/textAppearanceLarge" />
+            android:text="" />
 
         <TextView
             android:id="@+id/forecast_detail_clouds"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            style="@style/TextStyle.Large"
             android:paddingTop="5dp"
-            android:text=""
-            android:textAppearance="?android:attr/textAppearanceLarge" />
+            android:text="" />
 
         <TextView
             android:id="@+id/forecast_detail_rain"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            style="@style/TextStyle.Large"
             android:paddingTop="5dp"
-            android:text=""
-            android:textAppearance="?android:attr/textAppearanceLarge" />
+            android:text="" />
 
         <TextView
             android:id="@+id/forecast_detail_snow"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            style="@style/TextStyle.Large"
             android:paddingTop="5dp"
-            android:text=""
-            android:textAppearance="?android:attr/textAppearanceLarge" />
+            android:text="" />
 
     </LinearLayout>
 </android.support.v4.widget.NestedScrollView>

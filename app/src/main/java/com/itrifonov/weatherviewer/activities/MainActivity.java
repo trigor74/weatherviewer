@@ -126,9 +126,6 @@ public class MainActivity extends AppCompatActivity
                 ((ForecastListFragment) getSupportFragmentManager().findFragmentById(R.id.forecast_list))
                         .updateWeatherForecast();
                 return true;
-            case R.id.action_search:
-                // TODO: 18.11.2015 Add logic
-                return true;
             case R.id.action_settings:
                 Intent intent = new Intent(this, SettingsActivity.class);
                 startActivity(intent);
