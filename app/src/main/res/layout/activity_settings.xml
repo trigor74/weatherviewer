@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical">
@@ -39,13 +40,23 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content" />
 
-            <Switch
+            <android.support.v7.widget.SwitchCompat
                 android:id="@+id/switch_delete_old_data"
                 style="@style/SettingsTextViewStyle"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:paddingTop="14dp"
-                android:text="@string/settings_switch_delete_old_data" />
+                android:text="@string/settings_switch_delete_old_data"
+                app:showText="false" />
+
+            <android.support.v7.widget.SwitchCompat
+                android:id="@+id/switch_start_update_service"
+                style="@style/SettingsTextViewStyle"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:paddingTop="14dp"
+                android:text="@string/settings_switch_start_weather_update_service"
+                app:showText="false" />
 
         </LinearLayout>
 

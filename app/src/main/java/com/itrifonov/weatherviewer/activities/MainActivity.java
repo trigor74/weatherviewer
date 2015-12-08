@@ -15,6 +15,7 @@ import com.itrifonov.weatherviewer.R;
 import com.itrifonov.weatherviewer.fragments.ForecastDetailFragment;
 import com.itrifonov.weatherviewer.fragments.ForecastListFragment;
 import com.itrifonov.weatherviewer.models.Settings;
+import com.itrifonov.weatherviewer.services.WeatherUpdateService;
 import com.itrifonov.weatherviewer.weatherapi.models.ForecastListItem;
 
 import io.realm.Realm;
@@ -60,7 +61,16 @@ public class MainActivity extends AppCompatActivity
         realmResults = realm.where(ForecastListItem.class).findAllAsync();
         realmResults.addChangeListener(callback);
 
-        checkSettings();
+        setDefaultSettings();
+
+        Settings settings = realm.where(Settings.class).findFirst();
+        if (settings != null) {
+            if (settings.getStartUpdateService()) {
+                startService(new Intent(this, WeatherUpdateService.class));
+            } else {
+                stopService(new Intent(this, WeatherUpdateService.class));
+            }
+        }
 
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
@@ -161,7 +171,7 @@ public class MainActivity extends AppCompatActivity
         return getResources().getBoolean(R.bool.is_tablet_landscape);
     }
 
-    private void checkSettings() {
+    private void setDefaultSettings() {
         RealmResults<Settings> results = realm.allObjects(Settings.class);
         if (results.size() == 0) {
             realm.beginTransaction();
@@ -171,6 +181,7 @@ public class MainActivity extends AppCompatActivity
             settings.setUnits("metric");
             settings.setLastUpdate(-1);
             settings.setDeleteOldData(true);
+            settings.setStartUpdateService(true);
             realm.commitTransaction();
         }
     }

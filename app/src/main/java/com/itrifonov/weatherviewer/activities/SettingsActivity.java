@@ -3,9 +3,9 @@ package com.itrifonov.weatherviewer.activities;
 import android.os.Bundle;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.SwitchCompat;
 import android.support.v7.widget.Toolbar;
 import android.widget.EditText;
-import android.widget.Switch;
 
 import com.itrifonov.weatherviewer.R;
 import com.itrifonov.weatherviewer.models.Settings;
@@ -18,7 +18,8 @@ public class SettingsActivity extends AppCompatActivity {
     private Realm realm;
     private EditText apiKey;
     private EditText city;
-    private Switch delOldSwitch;
+    private SwitchCompat delOldSwitch;
+    private SwitchCompat startUpdateService;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -35,7 +36,9 @@ public class SettingsActivity extends AppCompatActivity {
         realm = Realm.getDefaultInstance();
         apiKey = (EditText) findViewById(R.id.edit_text_api_key);
         city = (EditText) findViewById(R.id.edit_text_city_name);
-        delOldSwitch = (Switch) findViewById(R.id.switch_delete_old_data);
+        delOldSwitch = (SwitchCompat) findViewById(R.id.switch_delete_old_data);
+        startUpdateService = (SwitchCompat) findViewById(R.id.switch_start_update_service);
+        // TODO: 08.12.2015 setOnCheckedChangeListener
     }
 
     @Override
@@ -53,6 +56,9 @@ public class SettingsActivity extends AppCompatActivity {
             if (delOldSwitch != null) {
                 delOldSwitch.setChecked(settings.getDeleteOldData());
             }
+            if (startUpdateService != null) {
+                startUpdateService.setChecked(settings.getStartUpdateService());
+            }
         }
     }
 
@@ -69,6 +75,9 @@ public class SettingsActivity extends AppCompatActivity {
         }
         if (delOldSwitch != null) {
             settings.setDeleteOldData(delOldSwitch.isChecked());
+        }
+        if (startUpdateService != null) {
+            settings.setStartUpdateService(startUpdateService.isChecked());
         }
         realm.commitTransaction();
     }

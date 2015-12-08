@@ -18,4 +18,5 @@
     <string name="settings_text_api_key">API key (APPID) for openweathermap.org</string>
     <string name="settings_text_city_name">City Name or ID</string>
     <string name="settings_switch_delete_old_data">Delete old weather forecast data</string>
+    <string name="settings_switch_start_weather_update_service">Start weather update service</string>
 </resources>
