@@ -14,8 +14,9 @@ import android.widget.TextView;
 import com.itrifonov.weatherviewer.R;
 import com.itrifonov.weatherviewer.fragments.ForecastDetailFragment;
 import com.itrifonov.weatherviewer.fragments.ForecastListFragment;
+import com.itrifonov.weatherviewer.interfaces.IOnListItemSelectedListener;
 import com.itrifonov.weatherviewer.models.Settings;
-import com.itrifonov.weatherviewer.services.WeatherUpdateService;
+import com.itrifonov.weatherviewer.services.ServiceHelper;
 import com.itrifonov.weatherviewer.weatherapi.models.ForecastListItem;
 
 import io.realm.Realm;
@@ -23,7 +24,7 @@ import io.realm.RealmChangeListener;
 import io.realm.RealmResults;
 
 public class MainActivity extends AppCompatActivity
-        implements ForecastListFragment.OnListItemSelectedListener {
+        implements IOnListItemSelectedListener {
 
     private int mPosition;
     private static final String STATE_POSITION = "STATE_POSITION";
@@ -64,11 +65,12 @@ public class MainActivity extends AppCompatActivity
         setDefaultSettings();
 
         Settings settings = realm.where(Settings.class).findFirst();
+        // TODO: 10.12.2015 change logic for start update service
         if (settings != null) {
             if (settings.getStartUpdateService()) {
-                startService(new Intent(this, WeatherUpdateService.class));
+                ServiceHelper.getInstance().startUpdateService();
             } else {
-                stopService(new Intent(this, WeatherUpdateService.class));
+                ServiceHelper.getInstance().stopUpdateService();
             }
         }
 

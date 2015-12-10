@@ -104,7 +104,8 @@ public class WeatherForecastUpdater extends AsyncTask<Void, Void, Void> {
                 } catch (IOException e) {
                     if (realm.isInTransaction())
                         realm.cancelTransaction();
-                    realm.refresh();
+//                    realm.refresh();
+                    // TODO: 09.12.2015 add callback
                     e.printStackTrace();
                 }
             }

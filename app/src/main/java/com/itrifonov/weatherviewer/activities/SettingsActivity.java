@@ -5,10 +5,12 @@ import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.SwitchCompat;
 import android.support.v7.widget.Toolbar;
+import android.widget.CompoundButton;
 import android.widget.EditText;
 
 import com.itrifonov.weatherviewer.R;
 import com.itrifonov.weatherviewer.models.Settings;
+import com.itrifonov.weatherviewer.services.ServiceHelper;
 
 import io.realm.Realm;
 import io.realm.RealmResults;
@@ -38,7 +40,16 @@ public class SettingsActivity extends AppCompatActivity {
         city = (EditText) findViewById(R.id.edit_text_city_name);
         delOldSwitch = (SwitchCompat) findViewById(R.id.switch_delete_old_data);
         startUpdateService = (SwitchCompat) findViewById(R.id.switch_start_update_service);
-        // TODO: 08.12.2015 setOnCheckedChangeListener
+        startUpdateService.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                if (isChecked) {
+                    ServiceHelper.getInstance().startUpdateService();
+                } else {
+                    ServiceHelper.getInstance().stopUpdateService();
+                }
+            }
+        });
     }
 
     @Override

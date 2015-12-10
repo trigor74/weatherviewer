@@ -13,12 +13,13 @@ import android.widget.AdapterView;
 import android.widget.ListView;
 
 import com.itrifonov.weatherviewer.R;
+import com.itrifonov.weatherviewer.interfaces.IOnListItemSelectedListener;
+import com.itrifonov.weatherviewer.interfaces.IServiceCallbackListener;
+import com.itrifonov.weatherviewer.services.ServiceHelper;
 import com.itrifonov.weatherviewer.weatherapi.models.ForecastListItem;
 import com.itrifonov.weatherviewer.weatherapi.WeatherAdapter;
-import com.itrifonov.weatherviewer.weatherapi.WeatherForecastUpdater;
 
 import io.realm.Realm;
-import io.realm.RealmChangeListener;
 import io.realm.RealmResults;
 
 public class ForecastListFragment extends Fragment
@@ -28,25 +29,20 @@ public class ForecastListFragment extends Fragment
     private WeatherAdapter mAdapter;
     private SwipeRefreshLayout swipeRefreshLayout;
     private Realm realm;
-    private RealmResults<ForecastListItem> realmResults;
-    private RealmChangeListener callback = new RealmChangeListener() {
+    private IServiceCallbackListener callback = new IServiceCallbackListener() {
         @Override
-        public void onChange() {
+        public void onServiceCallback() {
             swipeRefreshLayout.setRefreshing(false);
         }
     };
 
-    public interface OnListItemSelectedListener {
-        void onListItemSelected(int position);
-    }
-
-    private OnListItemSelectedListener mCallback;
+    private IOnListItemSelectedListener mCallback;
 
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);
         try {
-            mCallback = (OnListItemSelectedListener) context;
+            mCallback = (IOnListItemSelectedListener) context;
         } catch (ClassCastException e) {
             throw new ClassCastException(context.toString()
                     + " must implement OnHeadlineSelectedListener");
@@ -58,8 +54,7 @@ public class ForecastListFragment extends Fragment
         super.onCreate(savedInstanceState);
         setRetainInstance(true);
         realm = Realm.getDefaultInstance();
-        realmResults = realm.where(ForecastListItem.class).findAllAsync();
-        realmResults.addChangeListener(callback);
+        ServiceHelper.getInstance().addListener(callback);
     }
 
     @Nullable
@@ -123,7 +118,7 @@ public class ForecastListFragment extends Fragment
 
     public void updateWeatherForecast() {
         swipeRefreshLayout.setRefreshing(true);
-        new WeatherForecastUpdater().execute();
+        ServiceHelper.getInstance().updateWeatherForecast();
     }
 
     @Override
@@ -134,7 +129,7 @@ public class ForecastListFragment extends Fragment
     @Override
     public void onDestroy() {
         super.onDestroy();
-        realmResults.removeChangeListener(callback);
+        ServiceHelper.getInstance().removeListener(callback);
         realm.close();
     }
 }

@@ -9,12 +9,13 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import com.itrifonov.weatherviewer.R;
+import com.itrifonov.weatherviewer.interfaces.IServiceCallbackListener;
 import com.itrifonov.weatherviewer.models.Settings;
+import com.itrifonov.weatherviewer.services.ServiceHelper;
 
 import java.text.DateFormat;
 
 import io.realm.Realm;
-import io.realm.RealmChangeListener;
 import io.realm.RealmResults;
 
 public class InfobarFragment extends Fragment {
@@ -22,21 +23,20 @@ public class InfobarFragment extends Fragment {
     private TextView mCityName;
     private TextView mLastUpdated;
     private Realm realm;
-    private RealmResults<Settings> realmResults;
-    private RealmChangeListener callback = new RealmChangeListener() {
+    private IServiceCallbackListener callback = new IServiceCallbackListener() {
         @Override
-        public void onChange() {
+        public void onServiceCallback() {
             updateInfo();
         }
     };
+
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setRetainInstance(true);
         realm = Realm.getDefaultInstance();
-        realmResults = realm.where(Settings.class).findAllAsync();
-        realmResults.addChangeListener(callback);
+        ServiceHelper.getInstance().addListener(callback);
     }
 
     @Nullable
@@ -62,7 +62,7 @@ public class InfobarFragment extends Fragment {
     @Override
     public void onDestroy() {
         super.onDestroy();
-        realmResults.removeChangeListener(callback);
+        ServiceHelper.getInstance().removeListener(callback);
         realm.close();
     }
 
