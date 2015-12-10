@@ -1,24 +1,33 @@
 package com.itrifonov.weatherviewer.services;
 
+import android.content.Context;
+import android.content.Intent;
+
 import com.itrifonov.weatherviewer.interfaces.IServiceCallbackListener;
 
 import java.util.ArrayList;
 
 public class ServiceHelper {
     private static ServiceHelper helperInstance;
+    private static Context context;
 
-    public static ServiceHelper getInstance() {
+    public static ServiceHelper getInstance(Context context) {
         if (helperInstance == null) {
             synchronized (ServiceHelper.class) {
                 if (helperInstance == null) {
-                    helperInstance = new ServiceHelper();
+                    helperInstance = new ServiceHelper(context);
                 }
             }
         }
         return helperInstance;
     }
 
-    private ServiceHelper() {
+    public void setContext(Context context) {
+        this.context = context;
+    }
+
+    private ServiceHelper(Context context) {
+        setContext(context);
     }
 
     private ArrayList<IServiceCallbackListener> callbackListeners = new ArrayList<>();
@@ -40,13 +49,11 @@ public class ServiceHelper {
     }
 
     public void startUpdateService() {
-        // TODO: 10.12.2015 Add logic
-        //application.startService(new Intent(getApplicationContext(), UpdateService.class));
+        context.startService(new Intent(context, UpdateService.class));
     }
 
     public void stopUpdateService() {
-        // TODO: 10.12.2015 Add logic
-        //stopService(new Intent(getApplicationContext(), UpdateService.class));
+        context.stopService(new Intent(context, UpdateService.class));
     }
 
     public void updateWeatherForecast() {

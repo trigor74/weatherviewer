@@ -15,12 +15,12 @@ import com.itrifonov.weatherviewer.R;
 import com.itrifonov.weatherviewer.fragments.ForecastDetailFragment;
 import com.itrifonov.weatherviewer.fragments.ForecastListFragment;
 import com.itrifonov.weatherviewer.interfaces.IOnListItemSelectedListener;
+import com.itrifonov.weatherviewer.interfaces.IServiceCallbackListener;
 import com.itrifonov.weatherviewer.models.Settings;
 import com.itrifonov.weatherviewer.services.ServiceHelper;
 import com.itrifonov.weatherviewer.weatherapi.models.ForecastListItem;
 
 import io.realm.Realm;
-import io.realm.RealmChangeListener;
 import io.realm.RealmResults;
 
 public class MainActivity extends AppCompatActivity
@@ -29,10 +29,9 @@ public class MainActivity extends AppCompatActivity
     private int mPosition;
     private static final String STATE_POSITION = "STATE_POSITION";
     private Realm realm;
-    private RealmResults<ForecastListItem> realmResults;
-    private RealmChangeListener callback = new RealmChangeListener() {
+    private IServiceCallbackListener callback = new IServiceCallbackListener() {
         @Override
-        public void onChange() {
+        public void onServiceCallback() {
             ProgressBar progress = (ProgressBar) findViewById(R.id.progress_missing_forecast);
             if (progress != null)
                 progress.setVisibility(TextView.INVISIBLE);
@@ -59,18 +58,16 @@ public class MainActivity extends AppCompatActivity
         setContentView(R.layout.activity_main);
 
         realm = Realm.getDefaultInstance();
-        realmResults = realm.where(ForecastListItem.class).findAllAsync();
-        realmResults.addChangeListener(callback);
 
         setDefaultSettings();
 
+        ServiceHelper serviceHelper = ServiceHelper.getInstance(getApplicationContext());
         Settings settings = realm.where(Settings.class).findFirst();
-        // TODO: 10.12.2015 change logic for start update service
         if (settings != null) {
             if (settings.getStartUpdateService()) {
-                ServiceHelper.getInstance().startUpdateService();
+                serviceHelper.startUpdateService();
             } else {
-                ServiceHelper.getInstance().stopUpdateService();
+                serviceHelper.stopUpdateService();
             }
         }
 
@@ -189,9 +186,20 @@ public class MainActivity extends AppCompatActivity
     }
 
     @Override
+    protected void onResume() {
+        super.onResume();
+        ServiceHelper.getInstance(getApplicationContext()).addListener(callback);
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        ServiceHelper.getInstance(getApplicationContext()).removeListener(callback);
+    }
+
+    @Override
     protected void onDestroy() {
         super.onDestroy();
-        realmResults.removeChangeListener(callback);
         realm.close();
     }
 }

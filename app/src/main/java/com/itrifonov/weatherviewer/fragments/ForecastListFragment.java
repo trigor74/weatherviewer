@@ -54,7 +54,6 @@ public class ForecastListFragment extends Fragment
         super.onCreate(savedInstanceState);
         setRetainInstance(true);
         realm = Realm.getDefaultInstance();
-        ServiceHelper.getInstance().addListener(callback);
     }
 
     @Nullable
@@ -118,7 +117,7 @@ public class ForecastListFragment extends Fragment
 
     public void updateWeatherForecast() {
         swipeRefreshLayout.setRefreshing(true);
-        ServiceHelper.getInstance().updateWeatherForecast();
+        ServiceHelper.getInstance(getContext()).updateWeatherForecast();
     }
 
     @Override
@@ -127,9 +126,20 @@ public class ForecastListFragment extends Fragment
     }
 
     @Override
+    public void onResume() {
+        super.onResume();
+        ServiceHelper.getInstance(getContext()).addListener(callback);
+    }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+        ServiceHelper.getInstance(getContext()).removeListener(callback);
+    }
+
+    @Override
     public void onDestroy() {
         super.onDestroy();
-        ServiceHelper.getInstance().removeListener(callback);
         realm.close();
     }
 }

@@ -36,7 +36,6 @@ public class InfobarFragment extends Fragment {
         super.onCreate(savedInstanceState);
         setRetainInstance(true);
         realm = Realm.getDefaultInstance();
-        ServiceHelper.getInstance().addListener(callback);
     }
 
     @Nullable
@@ -60,17 +59,27 @@ public class InfobarFragment extends Fragment {
     }
 
     @Override
+    public void onResume() {
+        super.onResume();
+        ServiceHelper.getInstance(getContext()).addListener(callback);
+    }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+        ServiceHelper.getInstance(getContext()).removeListener(callback);
+    }
+
+    @Override
     public void onDestroy() {
         super.onDestroy();
-        ServiceHelper.getInstance().removeListener(callback);
         realm.close();
     }
 
     private void updateInfo() {
         if (realm != null) {
-            RealmResults<Settings> results = realm.allObjects(Settings.class);
-            if (results.size() != 0) {
-                Settings settings = results.first();
+            Settings settings = realm.where(Settings.class).findFirst();
+            if (settings != null) {
                 if (mLastUpdated != null) {
                     mLastUpdated.setText(getString(R.string.txt_last_update,
                             DateFormat.getDateTimeInstance().format(settings.getLastUpdate())));
