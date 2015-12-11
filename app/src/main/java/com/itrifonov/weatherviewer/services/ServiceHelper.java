@@ -58,5 +58,6 @@ public class ServiceHelper {
 
     public void updateWeatherForecast() {
         // TODO: 10.12.2015 Add logic
+        dispatchCallbacks();
     }
 }
