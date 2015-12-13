@@ -15,7 +15,7 @@ import com.itrifonov.weatherviewer.R;
 import com.itrifonov.weatherviewer.fragments.ForecastDetailFragment;
 import com.itrifonov.weatherviewer.fragments.ForecastListFragment;
 import com.itrifonov.weatherviewer.interfaces.IOnListItemSelectedListener;
-import com.itrifonov.weatherviewer.interfaces.IServiceCallbackListener;
+import com.itrifonov.weatherviewer.interfaces.IServiceHelperCallbackListener;
 import com.itrifonov.weatherviewer.models.Settings;
 import com.itrifonov.weatherviewer.services.ServiceHelper;
 import com.itrifonov.weatherviewer.weatherapi.models.ForecastListItem;
@@ -29,9 +29,9 @@ public class MainActivity extends AppCompatActivity
     private int mPosition;
     private static final String STATE_POSITION = "STATE_POSITION";
     private Realm realm;
-    private IServiceCallbackListener callback = new IServiceCallbackListener() {
+    private IServiceHelperCallbackListener callback = new IServiceHelperCallbackListener() {
         @Override
-        public void onServiceCallback() {
+        public void onServiceHelperCallback() {
             ProgressBar progress = (ProgressBar) findViewById(R.id.progress_missing_forecast);
             if (progress != null)
                 progress.setVisibility(TextView.INVISIBLE);

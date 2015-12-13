@@ -14,7 +14,7 @@ import android.widget.ListView;
 
 import com.itrifonov.weatherviewer.R;
 import com.itrifonov.weatherviewer.interfaces.IOnListItemSelectedListener;
-import com.itrifonov.weatherviewer.interfaces.IServiceCallbackListener;
+import com.itrifonov.weatherviewer.interfaces.IServiceHelperCallbackListener;
 import com.itrifonov.weatherviewer.services.ServiceHelper;
 import com.itrifonov.weatherviewer.weatherapi.models.ForecastListItem;
 import com.itrifonov.weatherviewer.weatherapi.WeatherAdapter;
@@ -29,20 +29,21 @@ public class ForecastListFragment extends Fragment
     private WeatherAdapter mAdapter;
     private SwipeRefreshLayout swipeRefreshLayout;
     private Realm realm;
-    private IServiceCallbackListener callback = new IServiceCallbackListener() {
-        @Override
-        public void onServiceCallback() {
-            swipeRefreshLayout.setRefreshing(false);
-        }
-    };
+    private IServiceHelperCallbackListener serviceHelperCallbackListener =
+            new IServiceHelperCallbackListener() {
+                @Override
+                public void onServiceHelperCallback() {
+                    swipeRefreshLayout.setRefreshing(false);
+                }
+            };
 
-    private IOnListItemSelectedListener mCallback;
+    private IOnListItemSelectedListener listItemSelectedListener;
 
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);
         try {
-            mCallback = (IOnListItemSelectedListener) context;
+            listItemSelectedListener = (IOnListItemSelectedListener) context;
         } catch (ClassCastException e) {
             throw new ClassCastException(context.toString()
                     + " must implement OnHeadlineSelectedListener");
@@ -110,7 +111,7 @@ public class ForecastListFragment extends Fragment
         mListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                mCallback.onListItemSelected(position);
+                listItemSelectedListener.onListItemSelected(position);
             }
         });
     }
@@ -128,13 +129,13 @@ public class ForecastListFragment extends Fragment
     @Override
     public void onResume() {
         super.onResume();
-        ServiceHelper.getInstance(getContext()).addListener(callback);
+        ServiceHelper.getInstance(getContext()).addListener(serviceHelperCallbackListener);
     }
 
     @Override
     public void onPause() {
         super.onPause();
-        ServiceHelper.getInstance(getContext()).removeListener(callback);
+        ServiceHelper.getInstance(getContext()).removeListener(serviceHelperCallbackListener);
     }
 
     @Override

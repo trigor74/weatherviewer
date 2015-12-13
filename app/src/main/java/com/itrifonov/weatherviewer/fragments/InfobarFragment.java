@@ -9,23 +9,22 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import com.itrifonov.weatherviewer.R;
-import com.itrifonov.weatherviewer.interfaces.IServiceCallbackListener;
+import com.itrifonov.weatherviewer.interfaces.IServiceHelperCallbackListener;
 import com.itrifonov.weatherviewer.models.Settings;
 import com.itrifonov.weatherviewer.services.ServiceHelper;
 
 import java.text.DateFormat;
 
 import io.realm.Realm;
-import io.realm.RealmResults;
 
 public class InfobarFragment extends Fragment {
 
     private TextView mCityName;
     private TextView mLastUpdated;
     private Realm realm;
-    private IServiceCallbackListener callback = new IServiceCallbackListener() {
+    private IServiceHelperCallbackListener callback = new IServiceHelperCallbackListener() {
         @Override
-        public void onServiceCallback() {
+        public void onServiceHelperCallback() {
             updateInfo();
         }
     };
@@ -84,6 +83,7 @@ public class InfobarFragment extends Fragment {
                     mLastUpdated.setText(getString(R.string.txt_last_update,
                             DateFormat.getDateTimeInstance().format(settings.getLastUpdate())));
                 }
+                // TODO: 13.12.15 get city name from received forecast data
                 if (mCityName != null) {
                     mCityName.setText(settings.getCity());
                 }

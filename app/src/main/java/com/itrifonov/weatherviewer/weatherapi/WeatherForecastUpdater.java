@@ -7,6 +7,7 @@ import com.google.gson.FieldAttributes;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.itrifonov.weatherviewer.models.Settings;
+import com.itrifonov.weatherviewer.weatherapi.interfaces.IWeatherUpdateListener;
 import com.itrifonov.weatherviewer.weatherapi.models.ForecastListItem;
 
 import java.io.ByteArrayOutputStream;
@@ -19,16 +20,29 @@ import io.realm.Realm;
 import io.realm.RealmObject;
 import io.realm.RealmResults;
 
-public class WeatherForecastUpdater extends AsyncTask<Void, Void, Void> {
+public class WeatherForecastUpdater extends AsyncTask<Void, Void, String> {
 
     private String BASE_URL = "http://api.openweathermap.org/data/2.5/forecast?";
     private String API_KEY = "&appid=";
     private String EXTRA_KEY = "&units=";
     private String IMG_URL = "http://openweathermap.org/img/w/";
     private String IMG_EXT = ".png";
+    private IWeatherUpdateListener updateListener;
+
+    public WeatherForecastUpdater(IWeatherUpdateListener updateListener) {
+        this.updateListener = updateListener;
+    }
 
     @Override
-    protected Void doInBackground(Void... params) {
+    protected void onPreExecute() {
+        if (updateListener != null) {
+            updateListener.onUpdateStarted();
+        }
+    }
+
+    @Override
+    protected String doInBackground(Void... params) {
+        String updateResult = "";
         Realm realm = null;
         try {
             realm = Realm.getDefaultInstance();
@@ -102,10 +116,10 @@ public class WeatherForecastUpdater extends AsyncTask<Void, Void, Void> {
                     realm.commitTransaction();
 
                 } catch (IOException e) {
-                    if (realm.isInTransaction())
+                    if (realm.isInTransaction()) {
                         realm.cancelTransaction();
-//                    realm.refresh();
-                    // TODO: 09.12.2015 add callback
+                    }
+                    updateResult = e.getMessage();
                     e.printStackTrace();
                 }
             }
@@ -115,6 +129,13 @@ public class WeatherForecastUpdater extends AsyncTask<Void, Void, Void> {
             }
         }
 
-        return null;
+        return updateResult;
+    }
+
+    @Override
+    protected void onPostExecute(String result) {
+        if (updateListener != null) {
+            updateListener.onUpdateFinished(result);
+        }
     }
 }

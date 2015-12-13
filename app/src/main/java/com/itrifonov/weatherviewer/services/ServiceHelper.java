@@ -3,13 +3,28 @@ package com.itrifonov.weatherviewer.services;
 import android.content.Context;
 import android.content.Intent;
 
-import com.itrifonov.weatherviewer.interfaces.IServiceCallbackListener;
+import com.itrifonov.weatherviewer.interfaces.IServiceHelperCallbackListener;
+import com.itrifonov.weatherviewer.weatherapi.WeatherForecastUpdater;
+import com.itrifonov.weatherviewer.weatherapi.models.ForecastListItem;
 
 import java.util.ArrayList;
+
+import io.realm.Realm;
+import io.realm.RealmChangeListener;
+import io.realm.RealmResults;
 
 public class ServiceHelper {
     private static ServiceHelper helperInstance;
     private static Context context;
+    private ArrayList<IServiceHelperCallbackListener> callbackListeners = new ArrayList<>();
+    private Realm realm;
+    private RealmResults<ForecastListItem> realmResults;
+    private RealmChangeListener callback = new RealmChangeListener() {
+        @Override
+        public void onChange() {
+            dispatchCallbacks();
+        }
+    };
 
     public static ServiceHelper getInstance(Context context) {
         if (helperInstance == null) {
@@ -28,22 +43,23 @@ public class ServiceHelper {
 
     private ServiceHelper(Context context) {
         setContext(context);
+        realm = Realm.getDefaultInstance();
+        realmResults = realm.where(ForecastListItem.class).findAllAsync();
+        realmResults.addChangeListener(callback);
     }
 
-    private ArrayList<IServiceCallbackListener> callbackListeners = new ArrayList<>();
-
-    public void addListener(IServiceCallbackListener listener) {
+    public void addListener(IServiceHelperCallbackListener listener) {
         callbackListeners.add(listener);
     }
 
-    public void removeListener(IServiceCallbackListener listener) {
+    public void removeListener(IServiceHelperCallbackListener listener) {
         callbackListeners.remove(listener);
     }
 
     private void dispatchCallbacks() {
-        for (IServiceCallbackListener callbackListener : callbackListeners) {
+        for (IServiceHelperCallbackListener callbackListener : callbackListeners) {
             if (callbackListener != null) {
-                callbackListener.onServiceCallback();
+                callbackListener.onServiceHelperCallback();
             }
         }
     }
@@ -58,6 +74,6 @@ public class ServiceHelper {
 
     public void updateWeatherForecast() {
         // TODO: 10.12.2015 Add logic
-        dispatchCallbacks();
+        new WeatherForecastUpdater(null).execute();
     }
 }
