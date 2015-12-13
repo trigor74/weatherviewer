@@ -28,7 +28,6 @@ public class ForecastListFragment extends Fragment
     private ListView mListView;
     private WeatherAdapter mAdapter;
     private SwipeRefreshLayout swipeRefreshLayout;
-    private Realm realm;
     private IServiceHelperCallbackListener serviceHelperCallbackListener =
             new IServiceHelperCallbackListener() {
                 @Override
@@ -54,7 +53,6 @@ public class ForecastListFragment extends Fragment
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setRetainInstance(true);
-        realm = Realm.getDefaultInstance();
     }
 
     @Nullable
@@ -100,18 +98,28 @@ public class ForecastListFragment extends Fragment
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
 
-        RealmResults<ForecastListItem> forecastList = realm.where(ForecastListItem.class).findAll();
-        if (forecastList.size() == 0) {
-            updateWeatherForecast();
+        Realm realm = null;
+        try {
+            realm = Realm.getDefaultInstance();
+
+            RealmResults<ForecastListItem> forecastList = realm.where(ForecastListItem.class).findAll();
+            if (forecastList.size() == 0) {
+                updateWeatherForecast();
+            }
+            if (mAdapter == null)
+                mAdapter = new WeatherAdapter(getActivity(), forecastList, true);
+            mListView.setAdapter(mAdapter);
+        } finally {
+            if (realm != null) {
+                realm.close();
+            }
         }
-        if (mAdapter == null)
-            mAdapter = new WeatherAdapter(getActivity(), forecastList, true);
-        mListView.setAdapter(mAdapter);
 
         mListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                listItemSelectedListener.onListItemSelected(position);
+                ForecastListItem item = (ForecastListItem) parent.getAdapter().getItem(position);
+                listItemSelectedListener.onListItemSelected(item.getTimeStamp());
             }
         });
     }
@@ -134,13 +142,7 @@ public class ForecastListFragment extends Fragment
 
     @Override
     public void onPause() {
-        super.onPause();
         ServiceHelper.getInstance(getContext()).removeListener(serviceHelperCallbackListener);
-    }
-
-    @Override
-    public void onDestroy() {
-        super.onDestroy();
-        realm.close();
+        super.onPause();
     }
 }

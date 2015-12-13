@@ -12,6 +12,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.itrifonov.weatherviewer.R;
+import com.itrifonov.weatherviewer.weatherapi.ConvertTools;
 import com.itrifonov.weatherviewer.weatherapi.models.ForecastListItem;
 
 import java.text.SimpleDateFormat;
@@ -21,8 +22,8 @@ import io.realm.RealmResults;
 
 public class ForecastDetailFragment extends Fragment {
 
-    public static String ARG_INDEX = "ARG_INDEX";
-    private static int mIndex = -1;
+    public static String ARG_TIMESTAMP = "ARG_TIMESTAMP";
+    private static long mTimeStamp = -1;
     private TextView time;
     private TextView dayOfWeek;
     private TextView date;
@@ -38,16 +39,14 @@ public class ForecastDetailFragment extends Fragment {
     private TextView clouds;
     private TextView rain;
     private TextView snow;
-    private Realm realm;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setRetainInstance(true);
-        if (getArguments() != null && getArguments().containsKey(ARG_INDEX)) {
-            mIndex = getArguments().getInt(ARG_INDEX, -1);
+        if (getArguments() != null && getArguments().containsKey(ARG_TIMESTAMP)) {
+            mTimeStamp = getArguments().getLong(ARG_TIMESTAMP, -1);
         }
-        realm = Realm.getDefaultInstance();
     }
 
     @Nullable
@@ -76,89 +75,70 @@ public class ForecastDetailFragment extends Fragment {
         clouds = (TextView) view.findViewById(R.id.forecast_detail_clouds);
         rain = (TextView) view.findViewById(R.id.forecast_detail_rain);
         snow = (TextView) view.findViewById(R.id.forecast_detail_snow);
-
     }
 
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
 
-        if (mIndex >= 0) {
-            update(mIndex);
+        if (mTimeStamp >= 0) {
+            update(mTimeStamp);
         }
     }
 
-    public void update(int index) {
-        mIndex = index;
-        if (mIndex == -1)
+    public void update(long ts) {
+        if (ts == -1)
             return;
-        if (realm == null)
-            return;
-        RealmResults<ForecastListItem> realmResults = realm.allObjects(ForecastListItem.class);
-        if (realmResults.size() == 0)
-            return;
-
-        ForecastListItem item = realmResults.get(mIndex);
+        Realm realm = null;
         try {
-            long timestamp = item.getTimeStamp() * 1000L;
-            SimpleDateFormat simpleDateFormat = new SimpleDateFormat("EEEE");
-            dayOfWeek.setText(simpleDateFormat.format(timestamp));
-            time.setText(DateFormat.getTimeFormat(getContext()).format(timestamp));
-            date.setText(DateFormat.getMediumDateFormat(getContext()).format(timestamp));
-            byte[] iconData = item.getWeather().get(0).getIconData();
-            if (iconData != null && iconData.length > 0)
-                icon.setImageBitmap(BitmapFactory.decodeByteArray(iconData, 0, iconData.length));
-            temp.setText(getTemp(item.getConditions().getTemp()));
-            description.setText(item.getWeather().get(0).getDescription());
-            temp_min.setText(getString(R.string.txt_temp_min, getTemp(item.getConditions().getTempMin())));
-            temp_max.setText(getString(R.string.txt_temp_max, getTemp(item.getConditions().getTempMax())));
-            pressure.setText(getString(R.string.txt_pressure, item.getConditions().getPressure()));
-            humidity.setText(getString(R.string.txt_humidity,
-                    (int) Math.round(item.getConditions().getHumidity())));
-            wind_speed.setText(getString(R.string.txt_wind_speed,
-                    (int) Math.round(item.getWind().getSpeed())));
-            wind_deg.setText(getString(R.string.txt_wind_direction,
-                    Math.round(item.getWind().getDeg()), degToDirection(item.getWind().getDeg())));
-            clouds.setText(getString(R.string.txt_clouds, item.getClouds().getCloudiness()));
-            if (!item.getRain().getM3h().isEmpty()) {
-                rain.setVisibility(View.VISIBLE);
-                rain.setText(getString(R.string.txt_rain, item.getRain().getM3h()));
-            } else {
-                rain.setVisibility(View.GONE);
-                rain.setText("");
+            realm = Realm.getDefaultInstance();
+            mTimeStamp = ts;
+            ForecastListItem item = realm.where(ForecastListItem.class)
+                    .greaterThanOrEqualTo("timeStamp", mTimeStamp).findFirst();
+
+            try {
+                long timestamp = item.getTimeStamp() * 1000L;
+                SimpleDateFormat simpleDateFormat = new SimpleDateFormat("EEEE");
+                dayOfWeek.setText(simpleDateFormat.format(timestamp));
+                time.setText(DateFormat.getTimeFormat(getContext()).format(timestamp));
+                date.setText(DateFormat.getMediumDateFormat(getContext()).format(timestamp));
+                byte[] iconData = item.getWeather().get(0).getIconData();
+                if (iconData != null && iconData.length > 0)
+                    icon.setImageBitmap(BitmapFactory.decodeByteArray(iconData, 0, iconData.length));
+                temp.setText(ConvertTools.convertTemp(item.getConditions().getTemp()));
+                description.setText(item.getWeather().get(0).getDescription());
+                temp_min.setText(getString(R.string.txt_temp_min, ConvertTools.convertTemp(item.getConditions().getTempMin())));
+                temp_max.setText(getString(R.string.txt_temp_max, ConvertTools.convertTemp(item.getConditions().getTempMax())));
+                pressure.setText(getString(R.string.txt_pressure, item.getConditions().getPressure()));
+                humidity.setText(getString(R.string.txt_humidity,
+                        (int) Math.round(item.getConditions().getHumidity())));
+                wind_speed.setText(getString(R.string.txt_wind_speed,
+                        (int) Math.round(item.getWind().getSpeed())));
+                wind_deg.setText(getString(R.string.txt_wind_direction,
+                        Math.round(item.getWind().getDeg()), ConvertTools.convertDirection(item.getWind().getDeg())));
+                clouds.setText(getString(R.string.txt_clouds, item.getClouds().getCloudiness()));
+                if (!item.getRain().getM3h().isEmpty()) {
+                    rain.setVisibility(View.VISIBLE);
+                    rain.setText(getString(R.string.txt_rain, item.getRain().getM3h()));
+                } else {
+                    rain.setVisibility(View.GONE);
+                    rain.setText("");
+                }
+                if (!item.getSnow().getM3h().isEmpty()) {
+                    snow.setVisibility(View.VISIBLE);
+                    snow.setText(getString(R.string.txt_snow, item.getSnow().getM3h()));
+                } else {
+                    snow.setVisibility(View.GONE);
+                    snow.setText("");
+                }
+
+            } catch (NullPointerException e) {
+                e.printStackTrace();
             }
-            if (!item.getSnow().getM3h().isEmpty()) {
-                snow.setVisibility(View.VISIBLE);
-                snow.setText(getString(R.string.txt_snow, item.getSnow().getM3h()));
-            } else {
-                snow.setVisibility(View.GONE);
-                snow.setText("");
-            }
 
-        } catch (NullPointerException e) {
-            e.printStackTrace();
+        } finally {
+            if (realm != null)
+                realm.close();
         }
-    }
-
-    private String getTemp(float f) {
-        int i = Math.round(f);
-        if (i > 0) {
-            return String.format("+%d", i);
-        } else {
-            return Integer.toString(i);
-        }
-
-    }
-
-    private String degToDirection(float deg) {
-        int val = (int) (deg / 22.5 + .5);
-        String[] dir = {"N", "NNE", "NE", "ENE", "E", "ESE", "SE", "SSE", "S", "SSW", "SW", "WSW", "W", "WNW", "NW", "NNW"};
-        return dir[(val % 16)];
-    }
-
-    @Override
-    public void onDestroy() {
-        super.onDestroy();
-        realm.close();
     }
 }

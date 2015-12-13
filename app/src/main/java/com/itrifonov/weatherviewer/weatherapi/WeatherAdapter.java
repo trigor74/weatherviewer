@@ -62,7 +62,7 @@ public class WeatherAdapter extends RealmBaseAdapter<ForecastListItem> {
             SimpleDateFormat simpleDateFormat = new SimpleDateFormat("EEEE");
             viewHolder.dayOfWeek.setText(simpleDateFormat.format(timestamp));
             viewHolder.date.setText(DateFormat.getMediumDateFormat(context).format(timestamp));
-            viewHolder.temp.setText(getTemp(item.getConditions().getTemp()));
+            viewHolder.temp.setText(ConvertTools.convertTemp(item.getConditions().getTemp()));
             byte[] iconData = item.getWeather().get(0).getIconData();
             if (iconData != null && iconData.length > 0)
                 viewHolder.icon.setImageBitmap(BitmapFactory.decodeByteArray(iconData, 0, iconData.length));
@@ -73,14 +73,5 @@ public class WeatherAdapter extends RealmBaseAdapter<ForecastListItem> {
 
     public RealmResults<ForecastListItem> getRealmResults() {
         return realmResults;
-    }
-
-    private String getTemp(float f) {
-        int i = Math.round(f);
-        if (i > 0) {
-            return String.format("+%d", i);
-        } else {
-            return String.format("%d", i);
-        }
     }
 }

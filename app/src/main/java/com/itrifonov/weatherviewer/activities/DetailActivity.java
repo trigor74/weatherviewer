@@ -10,7 +10,7 @@ import com.itrifonov.weatherviewer.fragments.ForecastDetailFragment;
 
 public class DetailActivity extends AppCompatActivity {
 
-    public static String ARG_INDEX = "ARG_INDEX";
+    public static String ARG_TIMESTAMP = "ARG_TIMESTAMP";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -31,9 +31,9 @@ public class DetailActivity extends AppCompatActivity {
                 .findFragmentById(R.id.forecast_detail);
 
         if (savedInstanceState == null) {
-            int index = getIntent().getExtras().getInt(ARG_INDEX, -1);
+            long timestamp = getIntent().getExtras().getLong(ARG_TIMESTAMP, -1);
             if (detailFragment != null) {
-                detailFragment.update(index);
+                detailFragment.update(timestamp);
             }
         }
     }

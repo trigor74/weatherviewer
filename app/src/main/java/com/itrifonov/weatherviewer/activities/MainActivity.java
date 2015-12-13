@@ -26,8 +26,9 @@ import io.realm.RealmResults;
 public class MainActivity extends AppCompatActivity
         implements IOnListItemSelectedListener {
 
-    private int mPosition;
-    private static final String STATE_POSITION = "STATE_POSITION";
+    private long timestamp = -1;
+    private static final String STATE_TIMESTAMP = "STATE_TIMESTAMP";
+    private Boolean hasData = false;
     private Realm realm;
     private IServiceHelperCallbackListener callback = new IServiceHelperCallbackListener() {
         @Override
@@ -35,19 +36,16 @@ public class MainActivity extends AppCompatActivity
             ProgressBar progress = (ProgressBar) findViewById(R.id.progress_missing_forecast);
             if (progress != null)
                 progress.setVisibility(TextView.INVISIBLE);
-            RealmResults<ForecastListItem> realmResults = realm.allObjects(ForecastListItem.class);
-            if (realmResults.size() != 0)
-                if (mPosition == -1)
-                    mPosition = 0;
+            if (hasData && timestamp == -1)
+                timestamp = 0;
             TextView textMissingForecast = (TextView) findViewById(R.id.text_view_missing_forecast);
             if (textMissingForecast != null)
                 textMissingForecast.setVisibility(TextView.INVISIBLE);
-            if (isTabletLandscapeMode() && (mPosition >= 0)) {
+            if (isTabletLandscapeMode() && hasData) {
                 ForecastDetailFragment detailFragment = (ForecastDetailFragment) getSupportFragmentManager()
                         .findFragmentById(R.id.forecast_detail);
-                if ((findViewById(R.id.forecast_detail) != null) && (detailFragment != null)) {
-                    detailFragment.update(mPosition);
-                }
+                if (detailFragment != null)
+                    detailFragment.update(timestamp);
             }
         }
     };
@@ -60,6 +58,9 @@ public class MainActivity extends AppCompatActivity
         realm = Realm.getDefaultInstance();
 
         setDefaultSettings();
+
+        RealmResults<ForecastListItem> realmResults = realm.allObjects(ForecastListItem.class);
+        hasData = realmResults.size() != 0;
 
         ServiceHelper serviceHelper = ServiceHelper.getInstance(getApplicationContext());
         Settings settings = realm.where(Settings.class).findFirst();
@@ -79,17 +80,16 @@ public class MainActivity extends AppCompatActivity
             actionBar.setIcon(R.drawable.ic_weather_sunny);
         }
 
-        mPosition = -1;
         TextView textMissingForecast = (TextView) findViewById(R.id.text_view_missing_forecast);
         ProgressBar progress = (ProgressBar) findViewById(R.id.progress_missing_forecast);
-        RealmResults<ForecastListItem> realmResults = realm.allObjects(ForecastListItem.class);
-        if (realmResults.size() != 0) {
-            mPosition = 0;
+        if (hasData) {
+            timestamp = 0;
             if (textMissingForecast != null)
                 textMissingForecast.setVisibility(TextView.INVISIBLE);
             if (progress != null)
                 progress.setVisibility(TextView.INVISIBLE);
         } else {
+            timestamp = -1;
             if (textMissingForecast != null)
                 textMissingForecast.setVisibility(TextView.VISIBLE);
             if (progress != null)
@@ -100,15 +100,15 @@ public class MainActivity extends AppCompatActivity
                 .findFragmentById(R.id.forecast_detail);
 
         if (savedInstanceState != null) {
-            mPosition = savedInstanceState.getInt(STATE_POSITION, -1);
+            timestamp = savedInstanceState.getInt(STATE_TIMESTAMP, -1);
             if (isTabletLandscapeMode()) {
-                if ((findViewById(R.id.forecast_detail) != null) && (detailFragment != null) && (mPosition != -1)) {
-                    detailFragment.update(mPosition);
+                if ((findViewById(R.id.forecast_detail) != null) && (detailFragment != null) && (timestamp != -1)) {
+                    detailFragment.update(timestamp);
                 }
             } else {
-                if (mPosition != -1) {
+                if (timestamp != -1) {
                     Intent intent = new Intent(this, DetailActivity.class);
-                    intent.putExtra(DetailActivity.ARG_INDEX, mPosition);
+                    intent.putExtra(DetailActivity.ARG_TIMESTAMP, timestamp);
                     startActivity(intent);
                 }
             }
@@ -145,24 +145,24 @@ public class MainActivity extends AppCompatActivity
     }
 
     @Override
-    public void onListItemSelected(int position) {
-        mPosition = position;
+    public void onListItemSelected(long ts) {
+        timestamp = ts;
         if (findViewById(R.id.forecast_detail) != null) {
             ForecastDetailFragment detailFragment = (ForecastDetailFragment) getSupportFragmentManager()
                     .findFragmentById(R.id.forecast_detail);
             if (detailFragment != null) {
-                detailFragment.update(position);
+                detailFragment.update(timestamp);
             }
         } else {
             Intent intent = new Intent(this, DetailActivity.class);
-            intent.putExtra(DetailActivity.ARG_INDEX, position);
+            intent.putExtra(DetailActivity.ARG_TIMESTAMP, timestamp);
             startActivity(intent);
         }
     }
 
     @Override
     protected void onSaveInstanceState(Bundle outState) {
-        outState.putInt(STATE_POSITION, mPosition);
+        outState.putLong(STATE_TIMESTAMP, timestamp);
         super.onSaveInstanceState(outState);
     }
 

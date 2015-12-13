@@ -159,8 +159,6 @@ public class UpdateService extends Service {
             ForecastListItem forecastItem = realm.where(ForecastListItem.class)
                     .greaterThanOrEqualTo("timeStamp", currentTimeStamp).findFirst();
             if (forecastItem != null) {
-                int mPosition = 0; // realm.allObjects(ForecastListItem.class).indexOf(forecastItem);
-
                 long timestamp = forecastItem.getTimeStamp() * 1000L;
                 String time = SimpleDateFormat.getTimeInstance().format(timestamp);
                 String dateTime = SimpleDateFormat.getDateTimeInstance().format(timestamp);
@@ -183,7 +181,7 @@ public class UpdateService extends Service {
                         (int) Math.round(forecastItem.getConditions().getHumidity())));
 
                 Intent notifyIntent = new Intent(context, DetailActivity.class);
-                notifyIntent.putExtra(DetailActivity.ARG_INDEX, mPosition);
+                notifyIntent.putExtra(DetailActivity.ARG_TIMESTAMP, forecastItem.getTimeStamp());
 
                 PendingIntent pendingIntent = PendingIntent.getActivity(context, 0,
                         notifyIntent, PendingIntent.FLAG_CANCEL_CURRENT);
