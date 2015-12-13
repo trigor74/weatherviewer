@@ -1,28 +1,34 @@
 package com.itrifonov.weatherviewer.services;
 
+import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
+import android.content.ServiceConnection;
+import android.os.IBinder;
 
 import com.itrifonov.weatherviewer.interfaces.IServiceHelperCallbackListener;
 import com.itrifonov.weatherviewer.weatherapi.WeatherForecastUpdater;
-import com.itrifonov.weatherviewer.weatherapi.models.ForecastListItem;
+import com.itrifonov.weatherviewer.weatherapi.interfaces.IWeatherUpdateListener;
 
 import java.util.ArrayList;
-
-import io.realm.Realm;
-import io.realm.RealmChangeListener;
-import io.realm.RealmResults;
 
 public class ServiceHelper {
     private static ServiceHelper helperInstance;
     private static Context context;
-    private ArrayList<IServiceHelperCallbackListener> callbackListeners = new ArrayList<>();
-    private Realm realm;
-    private RealmResults<ForecastListItem> realmResults;
-    private RealmChangeListener callback = new RealmChangeListener() {
+    private static ArrayList<IServiceHelperCallbackListener> callbackListeners = new ArrayList<>();
+
+    private static Boolean isServiceBound;
+    private UpdateService.UpdateServiceBinder updateServiceBinder;
+    private ServiceConnection serviceConnection = new ServiceConnection() {
         @Override
-        public void onChange() {
-            dispatchCallbacks();
+        public void onServiceConnected(ComponentName name, IBinder service) {
+            updateServiceBinder = (UpdateService.UpdateServiceBinder) service;
+            isServiceBound = true;
+        }
+
+        @Override
+        public void onServiceDisconnected(ComponentName name) {
+            isServiceBound = false;
         }
     };
 
@@ -43,9 +49,7 @@ public class ServiceHelper {
 
     private ServiceHelper(Context context) {
         setContext(context);
-        realm = Realm.getDefaultInstance();
-        realmResults = realm.where(ForecastListItem.class).findAllAsync();
-        realmResults.addChangeListener(callback);
+        isServiceBound = false;
     }
 
     public void addListener(IServiceHelperCallbackListener listener) {
@@ -56,6 +60,7 @@ public class ServiceHelper {
         callbackListeners.remove(listener);
     }
 
+
     private void dispatchCallbacks() {
         for (IServiceHelperCallbackListener callbackListener : callbackListeners) {
             if (callbackListener != null) {
@@ -65,15 +70,34 @@ public class ServiceHelper {
     }
 
     public void startUpdateService() {
-        context.startService(new Intent(context, UpdateService.class));
+        Intent intent = new Intent(context, UpdateService.class);
+        context.startService(intent);
+        context.bindService(intent, serviceConnection, Context.BIND_AUTO_CREATE);
     }
 
     public void stopUpdateService() {
+        if (isServiceBound)
+            context.unbindService(serviceConnection);
         context.stopService(new Intent(context, UpdateService.class));
     }
 
     public void updateWeatherForecast() {
-        // TODO: 10.12.2015 Add logic
-        new WeatherForecastUpdater(null).execute();
+        // TODO: 13.12.15 fix service callback before use
+//        if (isServiceBound) {
+//            updateServiceBinder.updateWeatherForecast();
+//        } else {
+            new WeatherForecastUpdater(weatherUpdateListener).execute();
+//        }
     }
+
+    private IWeatherUpdateListener weatherUpdateListener = new IWeatherUpdateListener() {
+        @Override
+        public void onUpdateStarted() {
+        }
+
+        @Override
+        public void onUpdateFinished(String errorMessage) {
+            dispatchCallbacks();
+        }
+    };
 }

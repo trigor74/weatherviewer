@@ -7,6 +7,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.os.AsyncTask;
+import android.os.Binder;
 import android.os.IBinder;
 import android.support.v7.app.NotificationCompat;
 
@@ -29,8 +30,8 @@ import io.realm.Realm;
 
 public class UpdateService extends Service {
 
-    public static final long UPDATE_INTERVAL = 60 * 1000; // 60 seconds
-    public static final long INFO_INTERVAL = 120 * 1000;
+    private long checkUpdateInterval = 60 * 1000; // 60 sec
+    private long updateWeatherInfoInterval = 600 * 1000; // 10 min
     private Timer checkUpdateTimer = new Timer();
     private Timer currentWeatherInfoTimer = new Timer();
     private NotificationManager notificationManager;
@@ -61,13 +62,17 @@ public class UpdateService extends Service {
         }
     };
 
-    public UpdateService() {
+    private final IBinder mBinder = new UpdateServiceBinder();
+
+    public class UpdateServiceBinder extends Binder {
+        public void updateWeatherForecast() {
+            UpdateService.this.updateWeatherForecast();
+        }
     }
 
     @Override
     public IBinder onBind(Intent intent) {
-        // TODO: Return the communication channel to the service.
-        throw new UnsupportedOperationException("Not yet implemented");
+        return mBinder;
     }
 
     @Override
@@ -75,19 +80,23 @@ public class UpdateService extends Service {
         super.onCreate();
         context = getApplicationContext();
         notificationManager = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
+        sheduleTasks();
+    }
+
+    private void sheduleTasks() {
         checkUpdateTimer.scheduleAtFixedRate(
                 new TimerTask() {
                     public void run() {
                         new CheckUpdateTask().execute();
                     }
-                }, 0, UPDATE_INTERVAL);
+                }, 0, checkUpdateInterval);
 
         currentWeatherInfoTimer.scheduleAtFixedRate(
                 new TimerTask() {
                     public void run() {
                         sendCurrentWeatherNotification();
                     }
-                }, 0, INFO_INTERVAL);
+                }, 0, updateWeatherInfoInterval);
     }
 
     @Override

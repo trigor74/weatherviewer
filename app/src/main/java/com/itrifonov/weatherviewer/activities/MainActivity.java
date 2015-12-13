@@ -101,17 +101,17 @@ public class MainActivity extends AppCompatActivity
 
         if (savedInstanceState != null) {
             timestamp = savedInstanceState.getInt(STATE_TIMESTAMP, -1);
-            if (isTabletLandscapeMode()) {
-                if ((findViewById(R.id.forecast_detail) != null) && (detailFragment != null) && (timestamp != -1)) {
-                    detailFragment.update(timestamp);
-                }
-            } else {
-                if (timestamp != -1) {
-                    Intent intent = new Intent(this, DetailActivity.class);
-                    intent.putExtra(DetailActivity.ARG_TIMESTAMP, timestamp);
-                    startActivity(intent);
-                }
+            if (!isTabletLandscapeMode() && hasData) {
+                Intent intent = new Intent(this, DetailActivity.class);
+                intent.putExtra(DetailActivity.ARG_TIMESTAMP, timestamp);
+                startActivity(intent);
             }
+        }
+        if (hasData
+                && isTabletLandscapeMode()
+                && (findViewById(R.id.forecast_detail) != null)
+                && (detailFragment != null)) {
+            detailFragment.update(timestamp);
         }
     }
 
