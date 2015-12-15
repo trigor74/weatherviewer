@@ -9,7 +9,7 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import com.itrifonov.weatherviewer.R;
-import com.itrifonov.weatherviewer.interfaces.IServiceHelperCallbackListener;
+import com.itrifonov.weatherviewer.services.interfaces.IServiceHelperCallbackListener;
 import com.itrifonov.weatherviewer.models.Settings;
 import com.itrifonov.weatherviewer.services.ServiceHelper;
 
@@ -24,7 +24,7 @@ public class InfobarFragment extends Fragment {
     private Realm realm;
     private IServiceHelperCallbackListener callback = new IServiceHelperCallbackListener() {
         @Override
-        public void onServiceHelperCallback() {
+        public void onServiceHelperCallback(int event) {
             updateInfo();
         }
     };

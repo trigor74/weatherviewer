@@ -20,7 +20,7 @@ import io.realm.Realm;
 import io.realm.RealmObject;
 import io.realm.RealmResults;
 
-public class WeatherForecastUpdater extends AsyncTask<Void, Void, String> {
+public class WeatherForecastUpdater extends AsyncTask<Void, Integer, String> {
 
     private String BASE_URL = "http://api.openweathermap.org/data/2.5/forecast?";
     private String API_KEY = "&appid=";
@@ -42,6 +42,7 @@ public class WeatherForecastUpdater extends AsyncTask<Void, Void, String> {
 
     @Override
     protected String doInBackground(Void... params) {
+        publishProgress(0);
         String updateResult = "";
         Realm realm = null;
         try {
@@ -55,6 +56,7 @@ public class WeatherForecastUpdater extends AsyncTask<Void, Void, String> {
                 } else {
                     city = "q=".concat(city);
                 }
+                publishProgress(5);
                 String apiKey = API_KEY.concat(settings.getApiKey());
                 String extraKey = EXTRA_KEY.concat(settings.getUnits());
                 String url = BASE_URL.concat(city.concat(apiKey).concat(extraKey));
@@ -65,6 +67,8 @@ public class WeatherForecastUpdater extends AsyncTask<Void, Void, String> {
                     connection.setReadTimeout(10000);
                     connection.connect();
                     InputStreamReader inputStreamReader = new InputStreamReader(connection.getInputStream());
+
+                    publishProgress(10);
 
                     Gson gson = new GsonBuilder()
                             .setExclusionStrategies(new ExclusionStrategy() {
@@ -82,6 +86,8 @@ public class WeatherForecastUpdater extends AsyncTask<Void, Void, String> {
                     openweathermapResult = gson.fromJson(inputStreamReader, OpenweathermapObject.class);
                     connection.disconnect();
                     connection = null;
+
+                    publishProgress(30);
 
                     for (final ForecastListItem item : openweathermapResult.getWeatherForecastList()) {
                         ByteArrayOutputStream buffer = new ByteArrayOutputStream();
@@ -101,6 +107,8 @@ public class WeatherForecastUpdater extends AsyncTask<Void, Void, String> {
                         item.getWeather().get(0).setIconData(buffer.toByteArray());
                     }
 
+                    publishProgress(70);
+
                     realm.beginTransaction();
 
                     if (settings.getDeleteOldData()) {
@@ -114,6 +122,8 @@ public class WeatherForecastUpdater extends AsyncTask<Void, Void, String> {
                     realm.allObjects(Settings.class).first().setLastUpdate(System.currentTimeMillis());
 
                     realm.commitTransaction();
+
+                    publishProgress(99);
 
                 } catch (IOException e) {
                     if (realm.isInTransaction()) {
@@ -129,7 +139,16 @@ public class WeatherForecastUpdater extends AsyncTask<Void, Void, String> {
             }
         }
 
+        publishProgress(100);
+
         return updateResult;
+    }
+
+    @Override
+    protected void onProgressUpdate(Integer... values) {
+        if (updateListener != null) {
+            updateListener.onProgressUpdated(values[0]);
+        }
     }
 
     @Override

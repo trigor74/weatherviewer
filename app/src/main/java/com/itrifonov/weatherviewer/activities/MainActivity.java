@@ -15,7 +15,7 @@ import com.itrifonov.weatherviewer.R;
 import com.itrifonov.weatherviewer.fragments.ForecastDetailFragment;
 import com.itrifonov.weatherviewer.fragments.ForecastListFragment;
 import com.itrifonov.weatherviewer.interfaces.IOnListItemSelectedListener;
-import com.itrifonov.weatherviewer.interfaces.IServiceHelperCallbackListener;
+import com.itrifonov.weatherviewer.services.interfaces.IServiceHelperCallbackListener;
 import com.itrifonov.weatherviewer.models.Settings;
 import com.itrifonov.weatherviewer.services.ServiceHelper;
 import com.itrifonov.weatherviewer.weatherapi.models.ForecastListItem;
@@ -32,7 +32,7 @@ public class MainActivity extends AppCompatActivity
     private Realm realm;
     private IServiceHelperCallbackListener callback = new IServiceHelperCallbackListener() {
         @Override
-        public void onServiceHelperCallback() {
+        public void onServiceHelperCallback(int event) {
             ProgressBar progress = (ProgressBar) findViewById(R.id.progress_missing_forecast);
             if (progress != null)
                 progress.setVisibility(TextView.INVISIBLE);
@@ -66,9 +66,9 @@ public class MainActivity extends AppCompatActivity
         Settings settings = realm.where(Settings.class).findFirst();
         if (settings != null) {
             if (settings.getStartUpdateService()) {
-                serviceHelper.startUpdateService();
+                serviceHelper.startNotificationService();
             } else {
-                serviceHelper.stopUpdateService();
+                serviceHelper.stopNotificationService();
             }
         }
 

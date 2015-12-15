@@ -39,6 +39,11 @@
         </activity>
 
         <service
+            android:name=".services.NotificationService"
+            android:enabled="true"
+            android:exported="true"></service>
+
+        <service
             android:name=".services.UpdateService"
             android:enabled="true"
             android:exported="true"></service>

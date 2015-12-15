@@ -14,7 +14,7 @@ import android.widget.ListView;
 
 import com.itrifonov.weatherviewer.R;
 import com.itrifonov.weatherviewer.interfaces.IOnListItemSelectedListener;
-import com.itrifonov.weatherviewer.interfaces.IServiceHelperCallbackListener;
+import com.itrifonov.weatherviewer.services.interfaces.IServiceHelperCallbackListener;
 import com.itrifonov.weatherviewer.services.ServiceHelper;
 import com.itrifonov.weatherviewer.weatherapi.models.ForecastListItem;
 import com.itrifonov.weatherviewer.weatherapi.WeatherAdapter;
@@ -31,7 +31,7 @@ public class ForecastListFragment extends Fragment
     private IServiceHelperCallbackListener serviceHelperCallbackListener =
             new IServiceHelperCallbackListener() {
                 @Override
-                public void onServiceHelperCallback() {
+                public void onServiceHelperCallback(int event) {
                     swipeRefreshLayout.setRefreshing(false);
                 }
             };
