@@ -44,9 +44,9 @@ public class SettingsActivity extends AppCompatActivity {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
                 if (isChecked) {
-                    ServiceHelper.getInstance(getApplicationContext()).startUpdateService();
+                    ServiceHelper.getInstance(getApplicationContext()).startNotificationService();
                 } else {
-                    ServiceHelper.getInstance(getApplicationContext()).stopUpdateService();
+                    ServiceHelper.getInstance(getApplicationContext()).stopNotificationService();
                 }
             }
         });

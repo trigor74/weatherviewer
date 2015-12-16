@@ -32,7 +32,11 @@ public class MainActivity extends AppCompatActivity
     private Realm realm;
     private IServiceHelperCallbackListener callback = new IServiceHelperCallbackListener() {
         @Override
-        public void onServiceHelperCallback(int event) {
+        public void onServiceHelperCallback(Bundle event) {
+            int eventId = event.getInt(ServiceHelper.SERVICE_HELPER_EVENT, -1);
+            if (eventId != ServiceHelper.EVENT_UPDATE_STOPPED)
+                return;
+
             ProgressBar progress = (ProgressBar) findViewById(R.id.progress_missing_forecast);
             if (progress != null)
                 progress.setVisibility(TextView.INVISIBLE);

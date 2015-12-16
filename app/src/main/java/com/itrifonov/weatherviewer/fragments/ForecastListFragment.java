@@ -31,7 +31,10 @@ public class ForecastListFragment extends Fragment
     private IServiceHelperCallbackListener serviceHelperCallbackListener =
             new IServiceHelperCallbackListener() {
                 @Override
-                public void onServiceHelperCallback(int event) {
+                public void onServiceHelperCallback(Bundle event) {
+                    int eventId = event.getInt(ServiceHelper.SERVICE_HELPER_EVENT, -1);
+                    if (eventId != ServiceHelper.EVENT_UPDATE_STOPPED)
+                        return;
                     swipeRefreshLayout.setRefreshing(false);
                 }
             };

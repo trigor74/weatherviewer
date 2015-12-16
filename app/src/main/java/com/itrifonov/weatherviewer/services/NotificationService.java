@@ -3,11 +3,13 @@ package com.itrifonov.weatherviewer.services;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.app.Service;
+import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.graphics.Bitmap;
-import android.os.Binder;
 import android.os.IBinder;
+import android.support.annotation.Nullable;
 import android.support.v7.app.NotificationCompat;
 
 import com.itrifonov.weatherviewer.R;
@@ -41,17 +43,10 @@ public class NotificationService extends Service {
     private static final int UPDATE_STATUS_ERROR = 5;
     private Context context;
 
-    private final IBinder mBinder = new UpdateServiceBinder();
-
-    public class UpdateServiceBinder extends Binder {
-        public NotificationService getService() {
-            return NotificationService.this;
-        }
-    }
-
+    @Nullable
     @Override
     public IBinder onBind(Intent intent) {
-        return mBinder;
+        return null;
     }
 
     @Override
@@ -60,7 +55,7 @@ public class NotificationService extends Service {
         context = getApplicationContext();
         notificationManager = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
         sheduleTasks();
-        // TODO: 15.12.2015 add broadcast receiver
+        context.registerReceiver(broadcastReceiver, new IntentFilter(UpdateService.BROADCAST_ACTION));
     }
 
     private void sheduleTasks() {
@@ -86,6 +81,7 @@ public class NotificationService extends Service {
         if (currentWeatherInfoTimer != null) currentWeatherInfoTimer.cancel();
         if (notificationManager != null) notificationManager.cancelAll();
         sendServiceStateNotification(false);
+        context.unregisterReceiver(broadcastReceiver);
         super.onDestroy();
     }
 
@@ -110,7 +106,7 @@ public class NotificationService extends Service {
                         .setTicker(message)
                         .setContentText(message)
                         .setContentIntent(pendingIntent)
-                        .setPriority(NotificationCompat.PRIORITY_LOW)
+                        .setPriority(NotificationCompat.PRIORITY_MIN)
                         .setGroup(NOTIFICATION_GROUP_KEY);
 
         notificationManager.notify(SERVICE_NOTIFICATION_ID, builder.build());
@@ -163,7 +159,14 @@ public class NotificationService extends Service {
                                 .setStyle(inboxStyle)
                                 .setContentIntent(pendingIntent)
                                 .setOngoing(true)
-                                .setPriority(NotificationCompat.PRIORITY_MIN);
+                                .setPriority(NotificationCompat.PRIORITY_LOW);
+
+                //Update button
+                Intent serviceIntent = new Intent(context, UpdateService.class);
+                PendingIntent servicePending = PendingIntent.getService(context, 0,
+                        serviceIntent, PendingIntent.FLAG_CANCEL_CURRENT);
+                builder.addAction(R.drawable.ic_refresh_white_48dp, "Update", servicePending);
+                //
 
                 notificationManager.notify(WEATHER_NOTIFICATION_ID, builder.build());
             }
@@ -206,17 +209,19 @@ public class NotificationService extends Service {
                 break;
             case UPDATE_STATUS_STARTED:
                 ticker = "Weather forecast update started";
+                builder.setProgress(0, 0, true);
                 message = ticker;
                 break;
             case UPDATE_STATUS_INPROGRESS:
                 ticker = "Weather forecast update in progress";
                 message = ticker;
+                builder.setProgress(0, 0, true);
                 break;
             case UPDATE_STATUS_UPDATED:
                 ticker = "Weather forecast updated";
                 message = getString(R.string.notification_last_update,
                         DateFormat.getDateTimeInstance().format(System.currentTimeMillis()));
-
+                builder.setProgress(0, 0, false);
                 break;
             case UPDATE_STATUS_ERROR:
                 ticker = "Weather forecast update error";
@@ -233,4 +238,29 @@ public class NotificationService extends Service {
 
         notificationManager.notify(UPDATE_NOTIFICATION_ID, builder.build());
     }
+
+    private BroadcastReceiver broadcastReceiver = new BroadcastReceiver() {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            int status = intent.getIntExtra(UpdateService.PARAM_STATUS, -1);
+            switch (status) {
+                case UpdateService.STATUS_START:
+                    sendUpdateStateNotification(UPDATE_STATUS_STARTED);
+                    break;
+                case UpdateService.STATUS_PROGRESS:
+                    int progress = intent.getIntExtra(UpdateService.PARAM_PROGRESS, -1);
+                    sendUpdateStateNotification(UPDATE_STATUS_INPROGRESS);
+                    break;
+                case UpdateService.STATUS_FINISH:
+                    String result = intent.getStringExtra(UpdateService.PARAM_RESULT);
+                    if (result.isEmpty()) {
+                        sendUpdateStateNotification(UPDATE_STATUS_UPDATED);
+                    } else {
+                        sendUpdateStateNotification(UPDATE_STATUS_ERROR);
+                    }
+                    break;
+            }
+        }
+    };
+
 }

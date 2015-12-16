@@ -24,7 +24,10 @@ public class InfobarFragment extends Fragment {
     private Realm realm;
     private IServiceHelperCallbackListener callback = new IServiceHelperCallbackListener() {
         @Override
-        public void onServiceHelperCallback(int event) {
+        public void onServiceHelperCallback(Bundle event) {
+            int eventId = event.getInt(ServiceHelper.SERVICE_HELPER_EVENT, -1);
+            if (eventId != ServiceHelper.EVENT_UPDATE_STOPPED)
+                return;
             updateInfo();
         }
     };
