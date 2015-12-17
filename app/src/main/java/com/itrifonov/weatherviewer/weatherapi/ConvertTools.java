@@ -14,9 +14,26 @@ public class ConvertTools {
     public static String convertTemp(float f) {
         int i = Math.round(f);
         if (i > 0) {
-            return String.format("+%d", i);
+            return String.format("+%d ℃", i);
         } else {
-            return String.format("%d", i);
+            return String.format("%d ℃", i);
+        }
+    }
+
+    public static String convertTemp(float f, Boolean metric) {
+        String sf = "%d";
+        if (metric) {
+            //Unicode Character 'DEGREE CELSIUS' (U+2103)
+            sf = sf.concat(" ℃");
+        } else {
+            //Unicode Character 'DEGREE FAHRENHEIT' (U+2109)
+            sf = sf.concat(" ℉");
+        }
+        int i = Math.round(f);
+        if (i > 0) {
+            return String.format("+".concat(sf), i);
+        } else {
+            return String.format(sf, i);
         }
     }
 
