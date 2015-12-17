@@ -99,7 +99,7 @@ public class NotificationService extends Service {
 
         NotificationCompat.Builder builder =
                 (NotificationCompat.Builder) new NotificationCompat.Builder(context)
-                        .setSmallIcon(R.drawable.ic_weather_sunny)
+                        .setSmallIcon(R.drawable.ic_notification)
                         .setContentTitle(getString(R.string.app_name))
                         .setWhen(System.currentTimeMillis())
                         .setAutoCancel(true)
@@ -149,7 +149,7 @@ public class NotificationService extends Service {
 
                 NotificationCompat.Builder builder =
                         (NotificationCompat.Builder) new NotificationCompat.Builder(context)
-                                .setSmallIcon(R.drawable.ic_weather_sunny)
+                                .setSmallIcon(R.drawable.ic_notification)
                                 .setLargeIcon(iconBitmap)
                                 .setContentTitle(getString(R.string.app_name))
                                 .setWhen(System.currentTimeMillis())
@@ -165,7 +165,7 @@ public class NotificationService extends Service {
                 Intent serviceIntent = new Intent(context, UpdateService.class);
                 PendingIntent servicePending = PendingIntent.getService(context, 0,
                         serviceIntent, PendingIntent.FLAG_CANCEL_CURRENT);
-                builder.addAction(R.drawable.ic_refresh_white_48dp, "Update", servicePending);
+                builder.addAction(R.drawable.ic_sync_white_18dp, "Update", servicePending);
                 //
 
                 notificationManager.notify(WEATHER_NOTIFICATION_ID, builder.build());
@@ -204,7 +204,7 @@ public class NotificationService extends Service {
                 PendingIntent servicePending = PendingIntent.getService(context, 0,
                         serviceIntent, PendingIntent.FLAG_CANCEL_CURRENT);
 
-                builder.addAction(R.drawable.ic_refresh_white_48dp, "Update", servicePending);
+                builder.addAction(R.drawable.ic_sync_white_18dp, "Update", servicePending);
 
                 break;
             case UPDATE_STATUS_STARTED:
@@ -232,7 +232,7 @@ public class NotificationService extends Service {
                 return;
         }
 
-        builder.setSmallIcon(R.drawable.ic_weather_sunny)
+        builder.setSmallIcon(R.drawable.ic_notification)
                 .setTicker(ticker)
                 .setContentText(message);
 

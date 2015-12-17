@@ -81,7 +81,7 @@ public class MainActivity extends AppCompatActivity
         ActionBar actionBar = getSupportActionBar();
         if (actionBar != null) {
             actionBar.setDisplayShowHomeEnabled(true);
-            actionBar.setIcon(R.drawable.ic_weather_sunny);
+            actionBar.setIcon(R.drawable.ic_weather_viewer);
         }
 
         TextView textMissingForecast = (TextView) findViewById(R.id.text_view_missing_forecast);
