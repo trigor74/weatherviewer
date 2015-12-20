@@ -2,9 +2,12 @@ package com.itrifonov.weatherviewer.services;
 
 import android.app.Service;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.IBinder;
+import android.preference.PreferenceManager;
 import android.support.annotation.Nullable;
 
+import com.itrifonov.weatherviewer.R;
 import com.itrifonov.weatherviewer.weatherapi.WeatherForecastUpdater;
 import com.itrifonov.weatherviewer.weatherapi.interfaces.IWeatherUpdateListener;
 
@@ -52,6 +55,12 @@ public class UpdateService extends Service {
 
         @Override
         public void onUpdateFinished(String errorMessage) {
+            if (errorMessage.isEmpty()) {
+                SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
+                SharedPreferences.Editor editor = preferences.edit();
+                editor.putLong(getString(R.string.last_update_key), System.currentTimeMillis());
+                editor.commit();
+            }
             Intent intent = new Intent(BROADCAST_ACTION);
             intent.putExtra(PARAM_STATUS, STATUS_FINISH);
             intent.putExtra(PARAM_RESULT, errorMessage);

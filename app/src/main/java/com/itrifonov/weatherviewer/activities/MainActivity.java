@@ -1,6 +1,8 @@
 package com.itrifonov.weatherviewer.activities;
 
+import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -16,7 +18,6 @@ import com.itrifonov.weatherviewer.fragments.ForecastDetailFragment;
 import com.itrifonov.weatherviewer.fragments.ForecastListFragment;
 import com.itrifonov.weatherviewer.interfaces.IOnListItemSelectedListener;
 import com.itrifonov.weatherviewer.services.interfaces.IServiceHelperCallbackListener;
-import com.itrifonov.weatherviewer.models.Settings;
 import com.itrifonov.weatherviewer.services.ServiceHelper;
 import com.itrifonov.weatherviewer.weatherapi.models.ForecastListItem;
 
@@ -26,6 +27,7 @@ import io.realm.RealmResults;
 public class MainActivity extends AppCompatActivity
         implements IOnListItemSelectedListener {
 
+    private SharedPreferences preferences;
     private long timestamp = -1;
     private static final String STATE_TIMESTAMP = "STATE_TIMESTAMP";
     private Boolean hasData = false;
@@ -61,19 +63,18 @@ public class MainActivity extends AppCompatActivity
 
         realm = Realm.getDefaultInstance();
 
-        setDefaultSettings();
+        preferences = getPreferences(Context.MODE_PRIVATE);
 
         RealmResults<ForecastListItem> realmResults = realm.allObjects(ForecastListItem.class);
         hasData = realmResults.size() != 0;
 
         ServiceHelper serviceHelper = ServiceHelper.getInstance(getApplicationContext());
-        Settings settings = realm.where(Settings.class).findFirst();
-        if (settings != null) {
-            if (settings.getStartUpdateService()) {
-                serviceHelper.startNotificationService();
-            } else {
-                serviceHelper.stopNotificationService();
-            }
+        Boolean showNotifications = preferences.getBoolean(getString(R.string.settings_show_notifications_key),
+                getResources().getBoolean(R.bool.settings_show_notifications_default));
+        if (showNotifications) {
+            serviceHelper.startNotificationService();
+        } else {
+            serviceHelper.stopNotificationService();
         }
 
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
@@ -140,7 +141,7 @@ public class MainActivity extends AppCompatActivity
                         .updateWeatherForecast();
                 return true;
             case R.id.action_settings:
-                Intent intent = new Intent(this, SettingsActivity.class);
+                Intent intent = new Intent(this, AppPreferencesActivity.class);
                 startActivity(intent);
                 return true;
             default:
@@ -172,21 +173,6 @@ public class MainActivity extends AppCompatActivity
 
     private boolean isTabletLandscapeMode() {
         return getResources().getBoolean(R.bool.is_tablet_landscape);
-    }
-
-    private void setDefaultSettings() {
-        RealmResults<Settings> results = realm.allObjects(Settings.class);
-        if (results.size() == 0) {
-            realm.beginTransaction();
-            Settings settings = realm.createObject(Settings.class);
-            settings.setApiKey("28bfbe7a35614f03ddaaf3b091f2a414");
-            settings.setCity("Cherkasy,UA");
-            settings.setUnits("metric");
-            settings.setLastUpdate(-1);
-            settings.setDeleteOldData(true);
-            settings.setStartUpdateService(true);
-            realm.commitTransaction();
-        }
     }
 
     @Override

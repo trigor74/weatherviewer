@@ -20,11 +20,13 @@ import io.realm.Realm;
 import io.realm.RealmObject;
 import io.realm.RealmResults;
 
-public class WeatherForecastUpdater extends AsyncTask<Void, Integer, String> {
+public class WeatherForecastUpdater extends AsyncTask<String, Integer, String> {
 
     private String BASE_URL = "http://api.openweathermap.org/data/2.5/forecast?";
     private String API_KEY = "&appid=";
-    private String EXTRA_KEY = "&units=";
+    private String UNITS_KEY = "&units=";
+    private String LANG_KEY = "&lang=";
+    private String DEL_OLD = "false";
     private String IMG_URL = "http://openweathermap.org/img/w/";
     private String IMG_EXT = ".png";
     private IWeatherUpdateListener updateListener;
@@ -41,12 +43,13 @@ public class WeatherForecastUpdater extends AsyncTask<Void, Integer, String> {
     }
 
     @Override
-    protected String doInBackground(Void... params) {
+    protected String doInBackground(String... params) {
         publishProgress(0);
         String updateResult = "";
         Realm realm = null;
         try {
             realm = Realm.getDefaultInstance();
+            // TODO: 20.12.15 process params - APPID, UNITS, LANG, DELETE OLD DATA
             RealmResults<Settings> realmResults = realm.allObjects(Settings.class);
             if (realmResults.size() != 0) {
                 Settings settings = realmResults.first();
@@ -58,7 +61,7 @@ public class WeatherForecastUpdater extends AsyncTask<Void, Integer, String> {
                 }
                 publishProgress(5);
                 String apiKey = API_KEY.concat(settings.getApiKey());
-                String extraKey = EXTRA_KEY.concat(settings.getUnits());
+                String extraKey = UNITS_KEY.concat(settings.getUnits());
                 String url = BASE_URL.concat(city.concat(apiKey).concat(extraKey));
                 OpenweathermapObject openweathermapResult = null;
                 try {

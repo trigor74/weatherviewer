@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="settings_appid_key">API_KEY</string>
+    <string name="settings_appid_title">API key (APPID)</string>
+    <string name="settings_appid_dialog_title">Enter API key (APPID)</string>
+    <string name="settings_appid_summary">To get access to weather API you need an API key whatever account you chose from Free to Enterprise.</string>
+    <string name="settings_appid_default">28bfbe7a35614f03ddaaf3b091f2a414</string>
+    <string name="settings_city_key">CITY</string>
+    <string name="settings_city_title">City Name or ID</string>
+    <string name="settings_city_dialog_title">Enter City Name or ID</string>
+    <string name="settings_city_summary">City name and country code divided by comma, or city ID.</string>
+    <string name="settings_city_default">Cherkasy,UA</string>
+    <string name="settings_units_key">UNITS</string>
+    <string name="settings_units_title">Units format</string>
+    <string name="settings_units_dialog_title">Choose units format</string>
+    <string name="settings_units_summary">Standard, metric, and imperial units are available.</string>
+    <string name="settings_units_default">metric</string>
+    <string name="settings_language_key">LANGUAGE</string>
+    <string name="settings_language_title">Language</string>
+    <string name="settings_language_dialog_title">Choose a language</string>
+    <string name="settings_language_default">en</string>
+    <string name="settings_app_category_title">Application preferences</string>
+    <string name="settings_delete_old_data_key">DELETE_OLD</string>
+    <string name="settings_delete_old_data_title">Delete old weather forecast data</string>
+    <bool name="settings_delete_old_data_default">true</bool>
+    <string name="settings_show_notifications_key">SHOW_NOTIFICATION</string>
+    <string name="settings_show_notifications_title">Show weather notifications</string>
+    <bool name="settings_show_notifications_default">true</bool>
+    <string-array name="settings_units_names">
+        <item>Standard (Kelvin)</item>
+        <item>Metric (Celsius)</item>
+        <item>Imperial (Fahrenheit)</item>
+    </string-array>
+    <string-array name="settings_units_values">
+        <item></item>
+        <item>metric</item>
+        <item>imperial</item>
+    </string-array>
+    <string-array name="settings_language_names">
+        <item>English</item>
+        <item>Ukrainian</item>
+        <item>Russian</item>
+        <item>Italian</item>
+        <item>Spanish</item>
+        <item>German</item>
+        <item>Portuguese</item>
+        <item>Romanian</item>
+        <item>Polish</item>
+        <item>Finnish</item>
+        <item>Dutch</item>
+        <item>French</item>
+        <item>Bulgarian</item>
+        <item>Swedish</item>
+        <item>Chinese Traditional</item>
+        <item>Chinese Simplified</item>
+        <item>Turkish</item>
+        <item>Croatian</item>
+        <item>Catalan</item>
+    </string-array>
+    <string-array name="settings_language_values">
+        <item>en</item>
+        <item>uk</item>
+        <item>ru</item>
+        <item>it</item>
+        <item>es</item>
+        <item>de</item>
+        <item>pt</item>
+        <item>ro</item>
+        <item>pl</item>
+        <item>fi</item>
+        <item>nl</item>
+        <item>fr</item>
+        <item>bg</item>
+        <item>sv</item>
+        <item>zh_tw</item>
+        <item>zh_cn</item>
+        <item>tr</item>
+        <item>hr</item>
+        <item>ca</item>
+    </string-array>
+    <string name="last_update_key">LAST_UPDATE</string>
+    <string name="current_city_key">CURRENT_CITY</string>
+    <string name="current_country_key">CURRENT_COUNTRY</string>
+</resources>

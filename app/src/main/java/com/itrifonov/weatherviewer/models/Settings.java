@@ -8,7 +8,7 @@ public class Settings extends RealmObject {
     private String apiKey;
     private String units;
     private Boolean deleteOldData;
-    private Boolean startUpdateService;
+    private Boolean startNotificationService;
 
     public String getCity() {
         return city;
@@ -50,11 +50,11 @@ public class Settings extends RealmObject {
         this.deleteOldData = deleteOldData;
     }
 
-    public Boolean getStartUpdateService() {
-        return startUpdateService;
+    public Boolean getStartNotificationService() {
+        return startNotificationService;
     }
 
-    public void setStartUpdateService(Boolean startUpdateService) {
-        this.startUpdateService = startUpdateService;
+    public void setStartNotificationService(Boolean startNotificationService) {
+        this.startNotificationService = startNotificationService;
     }
 }

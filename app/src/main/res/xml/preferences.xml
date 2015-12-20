@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
+    <PreferenceCategory
+        android:title="openweathermap.org">
+        <EditTextPreference
+            android:key="@string/settings_appid_key"
+            android:title="@string/settings_appid_title"
+            android:dialogTitle="@string/settings_appid_dialog_title"
+            android:summary="@string/settings_appid_summary"
+            android:defaultValue="@string/settings_appid_default"
+            />
+        <EditTextPreference
+            android:key="@string/settings_city_key"
+            android:title="@string/settings_city_title"
+            android:dialogTitle="@string/settings_city_dialog_title"
+            android:summary="@string/settings_city_summary"
+            android:defaultValue="@string/settings_city_default"
+            />
+
+        <ListPreference
+            android:key="@string/settings_units_key"
+            android:title="@string/settings_units_title"
+            android:dialogTitle="@string/settings_units_dialog_title"
+            android:summary="@string/settings_units_summary"
+            android:entries="@array/settings_units_names"
+            android:entryValues="@array/settings_units_values"
+            android:defaultValue="@string/settings_units_default"
+            />
+        <ListPreference
+            android:key="@string/settings_language_key"
+            android:title="@string/settings_language_title"
+            android:dialogTitle="@string/settings_language_dialog_title"
+            android:entries="@array/settings_language_names"
+            android:entryValues="@array/settings_language_values"
+            android:defaultValue="@string/settings_language_default"
+            />
+    </PreferenceCategory>
+    <PreferenceCategory
+        android:title="@string/settings_app_category_title">
+        <SwitchPreference
+            android:key="@string/settings_delete_old_data_key"
+            android:title="@string/settings_delete_old_data_title"
+            android:defaultValue="@bool/settings_delete_old_data_default"
+            />
+        <SwitchPreference
+            android:key="@string/settings_show_notifications_key"
+            android:title="@string/settings_show_notifications_title"
+            android:defaultValue="@bool/settings_show_notifications_default" />
+    </PreferenceCategory>
+</PreferenceScreen>
