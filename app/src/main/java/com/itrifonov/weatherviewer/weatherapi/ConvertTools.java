@@ -5,10 +5,11 @@ import android.graphics.BitmapFactory;
 
 public class ConvertTools {
 
+    private static String[] windDirection = {"N", "NNE", "NE", "ENE", "E", "ESE", "SE", "SSE", "S", "SSW", "SW", "WSW", "W", "WNW", "NW", "NNW"};
+
     public static String convertDirection(float deg) {
         int val = (int) (deg / 22.5 + .5);
-        String[] dir = {"N", "NNE", "NE", "ENE", "E", "ESE", "SE", "SSE", "S", "SSW", "SW", "WSW", "W", "WNW", "NW", "NNW"};
-        return dir[(val % 16)];
+        return windDirection[(val % 16)];
     }
 
     public static String convertTemp(float f) {

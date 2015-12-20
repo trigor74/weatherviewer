@@ -22,4 +22,13 @@
     <string name="settings_switch_delete_old_data">Delete old weather forecast data</string>
     <string name="settings_switch_start_weather_update_service">Start weather update service</string>
     <string name="notification_last_update">Weather Forecast updated at %1$s</string>
+    <string name="notification_text_update">Update</string>
+    <string name="notification_update_started">Weather forecast update started</string>
+    <string name="notification_update_in_progress">Weather forecast update in progress</string>
+    <string name="notification_update_updated">Weather forecast updated</string>
+    <string name="notification_update_error">Weather forecast update error</string>
+    <string name="notification_service_start">Weather Forecast NotificationService started</string>
+    <string name="notification_service_stop">Weather Forecast NotificationService stopped</string>
+    <string name="notification_current_weather_message">%1$s %2$s, %3$s</string>
+    <string name="notification_current_weather_title">"Weather forecast for %1$s"</string>
 </resources>

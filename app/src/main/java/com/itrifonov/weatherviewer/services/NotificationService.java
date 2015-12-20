@@ -36,11 +36,10 @@ public class NotificationService extends Service {
     private static final int UPDATE_NOTIFICATION_ID = 3;
     private static final String NOTIFICATION_GROUP_KEY = "services";
     private static final String ACTION_UPDATE = "UPDATE";
-    private static final int UPDATE_STATUS_AVAILABLE = 1;
-    private static final int UPDATE_STATUS_INPROGRESS = 2;
-    private static final int UPDATE_STATUS_STARTED = 3;
-    private static final int UPDATE_STATUS_UPDATED = 4;
-    private static final int UPDATE_STATUS_ERROR = 5;
+    private static final int UPDATE_STATUS_INPROGRESS = 1;
+    private static final int UPDATE_STATUS_STARTED = 2;
+    private static final int UPDATE_STATUS_UPDATED = 3;
+    private static final int UPDATE_STATUS_ERROR = 4;
     private Context context;
 
     @Nullable
@@ -88,9 +87,9 @@ public class NotificationService extends Service {
     private void sendServiceStateNotification(Boolean started) {
         String message;
         if (started) {
-            message = "Weather Forecast NotificationService started";
+            message = getString(R.string.notification_service_start);
         } else {
-            message = "Weather Forecast NotificationService stopped";
+            message = getString(R.string.notification_service_stop);
         }
 
         Intent notifyIntent = new Intent(context, MainActivity.class);
@@ -127,10 +126,10 @@ public class NotificationService extends Service {
                 Bitmap iconBitmap = ConvertTools.arrayToBitmap(forecastItem.getWeather().get(0).getIconData());
                 String description = forecastItem.getWeather().get(0).getDescription();
 
-                String message = time + ": " + temp + ", " + description;
+                String message = getString(R.string.notification_current_weather_message, time, temp, description);
 
                 NotificationCompat.InboxStyle inboxStyle = new NotificationCompat.InboxStyle();
-                inboxStyle.setBigContentTitle("Weather forecast for " + dateTime);
+                inboxStyle.setBigContentTitle(getString(R.string.notification_current_weather_title, dateTime));
                 inboxStyle.addLine(description);
                 inboxStyle.addLine(getString(R.string.txt_temp_min_max,
                         ConvertTools.convertTemp(forecastItem.getConditions().getTempMin()),
@@ -165,7 +164,8 @@ public class NotificationService extends Service {
                 Intent serviceIntent = new Intent(context, UpdateService.class);
                 PendingIntent servicePending = PendingIntent.getService(context, 0,
                         serviceIntent, PendingIntent.FLAG_CANCEL_CURRENT);
-                builder.addAction(R.drawable.ic_sync_white_18dp, "Update", servicePending);
+                builder.addAction(R.drawable.ic_sync_white_18dp,
+                        getString(R.string.notification_text_update), servicePending);
                 //
 
                 notificationManager.notify(WEATHER_NOTIFICATION_ID, builder.build());
@@ -195,36 +195,24 @@ public class NotificationService extends Service {
                 .setGroup(NOTIFICATION_GROUP_KEY);
 
         switch (updateStatus) {
-            case UPDATE_STATUS_AVAILABLE:
-                ticker = "Weather forecast update available";
-                message = ticker;
-
-                Intent serviceIntent = new Intent(context, NotificationService.class);
-                serviceIntent.setAction(ACTION_UPDATE);
-                PendingIntent servicePending = PendingIntent.getService(context, 0,
-                        serviceIntent, PendingIntent.FLAG_CANCEL_CURRENT);
-
-                builder.addAction(R.drawable.ic_sync_white_18dp, "Update", servicePending);
-
-                break;
             case UPDATE_STATUS_STARTED:
-                ticker = "Weather forecast update started";
+                ticker = getString(R.string.notification_update_started);
                 builder.setProgress(0, 0, true);
                 message = ticker;
                 break;
             case UPDATE_STATUS_INPROGRESS:
-                ticker = "Weather forecast update in progress";
+                ticker = getString(R.string.notification_update_in_progress);
                 message = ticker;
                 builder.setProgress(0, 0, true);
                 break;
             case UPDATE_STATUS_UPDATED:
-                ticker = "Weather forecast updated";
+                ticker = getString(R.string.notification_update_updated);
                 message = getString(R.string.notification_last_update,
                         DateFormat.getDateTimeInstance().format(System.currentTimeMillis()));
                 builder.setProgress(0, 0, false);
                 break;
             case UPDATE_STATUS_ERROR:
-                ticker = "Weather forecast update error";
+                ticker = getString(R.string.notification_update_error);
                 message = ticker;
                 break;
             default:
