@@ -12,19 +12,17 @@ public class ConvertTools {
         return windDirection[(val % 16)];
     }
 
-    public static String convertTemp(float f) {
-        int i = Math.round(f);
-        if (i > 0) {
-            return String.format("+%d ℃", i);
-        } else {
-            return String.format("%d ℃", i);
-        }
-    }
-
     //Unicode Character 'DEGREE CELSIUS' (U+2103) ℃
     //Unicode Character 'DEGREE FAHRENHEIT' (U+2109) ℉
-    //units = "metric" for celsius, "imperial" for fahrenheit or empty for kelvin
-    public static String convertTemp(float f, String units) {
+
+    /**
+     * Convert float value of temperature to string with units suffix
+     *
+     * @param temp  float temperature
+     * @param units string with "metric" for celsius, "imperial" for fahrenheit or empty sting for standard kelvin
+     * @return String with units suffix
+     */
+    public static String convertTemp(float temp, String units) {
         String sf = "%d";
         if (units.equals("metric")) {
             sf = sf.concat(" ℃");
@@ -32,7 +30,7 @@ public class ConvertTools {
             sf = sf.concat(" ℉");
         }
 
-        int i = Math.round(f);
+        int i = Math.round(temp);
         if (units.isEmpty() || (i <= 0)) {
             return String.format(sf, i);
         } else {

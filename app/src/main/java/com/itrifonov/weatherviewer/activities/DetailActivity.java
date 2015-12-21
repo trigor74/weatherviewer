@@ -11,11 +11,13 @@ import com.itrifonov.weatherviewer.fragments.ForecastDetailFragment;
 public class DetailActivity extends AppCompatActivity {
 
     public static String ARG_TIMESTAMP = "ARG_TIMESTAMP";
+    public static String ARG_IGNORE_LANDSCAPE = "ARG_IGNORE_LANDSCAPE";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-//        if (isTabletLandscapeMode())
-//            finish();
+        Boolean ignoreLandscape = getIntent().getExtras().getBoolean(ARG_IGNORE_LANDSCAPE, false);
+        if (!ignoreLandscape && isTabletLandscapeMode())
+            finish();
 
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_detail);
@@ -30,12 +32,12 @@ public class DetailActivity extends AppCompatActivity {
         ForecastDetailFragment detailFragment = (ForecastDetailFragment) getSupportFragmentManager()
                 .findFragmentById(R.id.forecast_detail);
 
-        if (savedInstanceState == null) {
+//        if (savedInstanceState == null) {
             long timestamp = getIntent().getExtras().getLong(ARG_TIMESTAMP, -1);
             if (detailFragment != null) {
                 detailFragment.update(timestamp);
             }
-        }
+//        }
     }
 
     private boolean isTabletLandscapeMode() {

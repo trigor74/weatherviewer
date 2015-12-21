@@ -27,6 +27,8 @@
     <string name="notification_update_error">Weather forecast update error</string>
     <string name="notification_service_start">Weather Forecast NotificationService started</string>
     <string name="notification_service_stop">Weather Forecast NotificationService stopped</string>
-    <string name="notification_current_weather_message">%1$s %2$s, %3$s</string>
-    <string name="notification_current_weather_title">Weather forecast for %1$s</string>
+    <string name="notification_current_weather_title">%1$s %2$s</string>
+    <string name="notification_current_weather_big_title">%1$s %2$s</string>
+    <string name="notification_current_weather_ticker">%1$s %2$s %3$s, %4$s</string>
+    <string name="notification_current_weather_message">%1$s, %2$s</string>
 </resources>

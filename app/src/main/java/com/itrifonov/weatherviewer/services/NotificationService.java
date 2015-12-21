@@ -7,8 +7,10 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.os.IBinder;
+import android.preference.PreferenceManager;
 import android.support.annotation.Nullable;
 import android.support.v7.app.NotificationCompat;
 
@@ -112,6 +114,10 @@ public class NotificationService extends Service {
     }
 
     private void sendCurrentWeatherNotification() {
+        SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
+        String units = preferences.getString(getString(R.string.settings_units_key), getString(R.string.settings_units_default));
+        String city = preferences.getString(getString(R.string.current_city_key), getString(R.string.settings_city_default));
+
         Realm realm = null;
         try {
             realm = Realm.getDefaultInstance();
@@ -122,18 +128,20 @@ public class NotificationService extends Service {
                 long timestamp = forecastItem.getTimeStamp() * 1000L;
                 String time = SimpleDateFormat.getTimeInstance().format(timestamp);
                 String dateTime = SimpleDateFormat.getDateTimeInstance().format(timestamp);
-                String temp = ConvertTools.convertTemp(forecastItem.getConditions().getTemp());
+                String temp = ConvertTools.convertTemp(forecastItem.getConditions().getTemp(), units);
                 Bitmap iconBitmap = ConvertTools.arrayToBitmap(forecastItem.getWeather().get(0).getIconData());
                 String description = forecastItem.getWeather().get(0).getDescription();
 
-                String message = getString(R.string.notification_current_weather_message, time, temp, description);
+                String title = getString(R.string.notification_current_weather_title, city, time);
+                String ticker = getString(R.string.notification_current_weather_ticker, city, time, temp, description);
+                String message = getString(R.string.notification_current_weather_message, temp, description);
 
                 NotificationCompat.InboxStyle inboxStyle = new NotificationCompat.InboxStyle();
-                inboxStyle.setBigContentTitle(getString(R.string.notification_current_weather_title, dateTime));
+                inboxStyle.setBigContentTitle(getString(R.string.notification_current_weather_big_title, city, dateTime));
                 inboxStyle.addLine(description);
                 inboxStyle.addLine(getString(R.string.txt_temp_min_max,
-                        ConvertTools.convertTemp(forecastItem.getConditions().getTempMin()),
-                        ConvertTools.convertTemp(forecastItem.getConditions().getTempMax())));
+                        ConvertTools.convertTemp(forecastItem.getConditions().getTempMin(), units),
+                        ConvertTools.convertTemp(forecastItem.getConditions().getTempMax(), units)));
                 inboxStyle.addLine(getString(R.string.txt_wind_speed_direction,
                         (int) Math.round(forecastItem.getWind().getSpeed()),
                         ConvertTools.convertDirection(forecastItem.getWind().getDeg())));
@@ -142,6 +150,7 @@ public class NotificationService extends Service {
 
                 Intent notifyIntent = new Intent(context, DetailActivity.class);
                 notifyIntent.putExtra(DetailActivity.ARG_TIMESTAMP, forecastItem.getTimeStamp());
+                notifyIntent.putExtra(DetailActivity.ARG_IGNORE_LANDSCAPE, true);
 
                 PendingIntent pendingIntent = PendingIntent.getActivity(context, 0,
                         notifyIntent, PendingIntent.FLAG_CANCEL_CURRENT);
@@ -150,10 +159,10 @@ public class NotificationService extends Service {
                         (NotificationCompat.Builder) new NotificationCompat.Builder(context)
                                 .setSmallIcon(R.drawable.ic_notification)
                                 .setLargeIcon(iconBitmap)
-                                .setContentTitle(getString(R.string.app_name))
+                                .setContentTitle(title)
                                 .setWhen(System.currentTimeMillis())
                                 .setAutoCancel(false)
-                                .setTicker(message)
+                                .setTicker(ticker)
                                 .setContentText(message)
                                 .setStyle(inboxStyle)
                                 .setContentIntent(pendingIntent)

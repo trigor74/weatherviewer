@@ -20,7 +20,6 @@ import com.itrifonov.weatherviewer.weatherapi.models.ForecastListItem;
 import java.text.SimpleDateFormat;
 
 import io.realm.Realm;
-import io.realm.RealmResults;
 
 public class ForecastDetailFragment extends Fragment {
 

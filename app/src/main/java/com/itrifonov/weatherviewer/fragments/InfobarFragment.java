@@ -12,12 +12,9 @@ import android.widget.TextView;
 
 import com.itrifonov.weatherviewer.R;
 import com.itrifonov.weatherviewer.services.interfaces.IServiceHelperCallbackListener;
-import com.itrifonov.weatherviewer.models.Settings;
 import com.itrifonov.weatherviewer.services.ServiceHelper;
 
 import java.text.DateFormat;
-
-import io.realm.Realm;
 
 public class InfobarFragment extends Fragment {
 
