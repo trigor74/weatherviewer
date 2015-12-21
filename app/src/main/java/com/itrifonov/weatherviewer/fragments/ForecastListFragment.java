@@ -25,6 +25,7 @@ import io.realm.RealmResults;
 public class ForecastListFragment extends Fragment
         implements SwipeRefreshLayout.OnRefreshListener {
 
+    private Realm realm;
     private ListView mListView;
     private WeatherAdapter mAdapter;
     private SwipeRefreshLayout swipeRefreshLayout;
@@ -56,6 +57,7 @@ public class ForecastListFragment extends Fragment
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setRetainInstance(true);
+        realm = Realm.getDefaultInstance();
     }
 
     @Nullable
@@ -101,22 +103,14 @@ public class ForecastListFragment extends Fragment
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
 
-        Realm realm = null;
-        try {
-            realm = Realm.getDefaultInstance();
-
-            RealmResults<ForecastListItem> forecastList = realm.where(ForecastListItem.class).findAll();
-            if (forecastList.size() == 0) {
-                updateWeatherForecast();
-            }
-            if (mAdapter == null)
-                mAdapter = new WeatherAdapter(getActivity(), forecastList, true);
-            mListView.setAdapter(mAdapter);
-        } finally {
-            if (realm != null) {
-                realm.close();
-            }
+        RealmResults<ForecastListItem> forecastList = realm.where(ForecastListItem.class).findAll();
+        if (forecastList.size() == 0) {
+            updateWeatherForecast();
         }
+        if (mAdapter == null) {
+            mAdapter = new WeatherAdapter(getActivity(), forecastList, true);
+        }
+        mListView.setAdapter(mAdapter);
 
         mListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
@@ -147,5 +141,11 @@ public class ForecastListFragment extends Fragment
     public void onPause() {
         ServiceHelper.getInstance(getContext()).removeListener(serviceHelperCallbackListener);
         super.onPause();
+    }
+
+    @Override
+    public void onDestroy() {
+        realm.close();
+        super.onDestroy();
     }
 }
