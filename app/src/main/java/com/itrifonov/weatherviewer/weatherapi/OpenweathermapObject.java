@@ -1,5 +1,6 @@
 package com.itrifonov.weatherviewer.weatherapi;
 
+import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 import com.itrifonov.weatherviewer.weatherapi.models.City;
 import com.itrifonov.weatherviewer.weatherapi.models.ForecastListItem;
@@ -12,6 +13,8 @@ public class OpenweathermapObject {
     private int count;
     @SerializedName("list")
     ArrayList<ForecastListItem> weatherForecastList;
+    @Expose
+    private String errorMessage;
 
     public ArrayList<ForecastListItem> getWeatherForecastList() {
         return weatherForecastList;
@@ -29,4 +32,15 @@ public class OpenweathermapObject {
         return city.getCityId();
     }
 
+    public String getErrorMessage() {
+        if (errorMessage != null) {
+            return errorMessage;
+        } else {
+            return "";
+        }
+    }
+
+    public void setErrorMessage(String errorMessage) {
+        this.errorMessage = errorMessage;
+    }
 }

@@ -1,7 +1,9 @@
 package com.itrifonov.weatherviewer.fragments;
 
+import android.content.SharedPreferences;
 import android.graphics.BitmapFactory;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.text.format.DateFormat;
@@ -90,6 +92,8 @@ public class ForecastDetailFragment extends Fragment {
         if (ts == -1)
             return;
         Realm realm = null;
+        SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(getActivity().getApplicationContext());
+        String units = preferences.getString(getString(R.string.settings_units_key), getString(R.string.settings_units_default));
         try {
             realm = Realm.getDefaultInstance();
             mTimeStamp = ts;
@@ -105,10 +109,10 @@ public class ForecastDetailFragment extends Fragment {
                 byte[] iconData = item.getWeather().get(0).getIconData();
                 if (iconData != null && iconData.length > 0)
                     icon.setImageBitmap(BitmapFactory.decodeByteArray(iconData, 0, iconData.length));
-                temp.setText(ConvertTools.convertTemp(item.getConditions().getTemp()));
+                temp.setText(ConvertTools.convertTemp(item.getConditions().getTemp(), units));
                 description.setText(item.getWeather().get(0).getDescription());
-                temp_min.setText(getString(R.string.txt_temp_min, ConvertTools.convertTemp(item.getConditions().getTempMin())));
-                temp_max.setText(getString(R.string.txt_temp_max, ConvertTools.convertTemp(item.getConditions().getTempMax())));
+                temp_min.setText(getString(R.string.txt_temp_min, ConvertTools.convertTemp(item.getConditions().getTempMin(), units)));
+                temp_max.setText(getString(R.string.txt_temp_max, ConvertTools.convertTemp(item.getConditions().getTempMax(), units)));
                 pressure.setText(getString(R.string.txt_pressure, item.getConditions().getPressure()));
                 humidity.setText(getString(R.string.txt_humidity,
                         (int) Math.round(item.getConditions().getHumidity())));

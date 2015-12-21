@@ -1,9 +1,11 @@
 package com.itrifonov.weatherviewer.weatherapi.interfaces;
 
+import com.itrifonov.weatherviewer.weatherapi.OpenweathermapObject;
+
 public interface IWeatherUpdateListener {
     void onUpdateStarted();
 
     void onProgressUpdated(int progress);
 
-    void onUpdateFinished(String errorMessage);
+    void onUpdateFinished(OpenweathermapObject data);
 }

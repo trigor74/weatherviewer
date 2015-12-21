@@ -21,20 +21,22 @@ public class ConvertTools {
         }
     }
 
-    public static String convertTemp(float f, Boolean metric) {
+    //Unicode Character 'DEGREE CELSIUS' (U+2103) ℃
+    //Unicode Character 'DEGREE FAHRENHEIT' (U+2109) ℉
+    //units = "metric" for celsius, "imperial" for fahrenheit or empty for kelvin
+    public static String convertTemp(float f, String units) {
         String sf = "%d";
-        if (metric) {
-            //Unicode Character 'DEGREE CELSIUS' (U+2103)
+        if (units.equals("metric")) {
             sf = sf.concat(" ℃");
-        } else {
-            //Unicode Character 'DEGREE FAHRENHEIT' (U+2109)
+        } else if (units.equals("imperial")) {
             sf = sf.concat(" ℉");
         }
+
         int i = Math.round(f);
-        if (i > 0) {
-            return String.format("+".concat(sf), i);
-        } else {
+        if (units.isEmpty() || (i <= 0)) {
             return String.format(sf, i);
+        } else {
+            return String.format("+".concat(sf), i);
         }
     }
 

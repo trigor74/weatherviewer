@@ -1,6 +1,8 @@
 package com.itrifonov.weatherviewer.fragments;
 
+import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
@@ -21,7 +23,6 @@ public class InfobarFragment extends Fragment {
 
     private TextView mCityName;
     private TextView mLastUpdated;
-    private Realm realm;
     private IServiceHelperCallbackListener callback = new IServiceHelperCallbackListener() {
         @Override
         public void onServiceHelperCallback(Bundle event) {
@@ -37,7 +38,6 @@ public class InfobarFragment extends Fragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setRetainInstance(true);
-        realm = Realm.getDefaultInstance();
     }
 
     @Nullable
@@ -75,22 +75,12 @@ public class InfobarFragment extends Fragment {
     @Override
     public void onDestroy() {
         super.onDestroy();
-        realm.close();
     }
 
     private void updateInfo() {
-        if (realm != null) {
-            Settings settings = realm.where(Settings.class).findFirst();
-            if (settings != null) {
-                if (mLastUpdated != null) {
-                    mLastUpdated.setText(getString(R.string.txt_last_update,
-                            DateFormat.getDateTimeInstance().format(settings.getLastUpdate())));
-                }
-                // TODO: 13.12.15 get city name from received forecast data
-                if (mCityName != null) {
-                    mCityName.setText(settings.getCity());
-                }
-            }
-        }
+        SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(getActivity().getApplicationContext());
+        mLastUpdated.setText(getString(R.string.txt_last_update,
+                DateFormat.getDateTimeInstance().format(preferences.getLong(getString(R.string.last_update_key), -1))));
+        mCityName.setText(preferences.getString(getString(R.string.current_city_key), getString(R.string.settings_city_default)));
     }
 }

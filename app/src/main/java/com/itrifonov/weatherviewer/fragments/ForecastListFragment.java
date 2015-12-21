@@ -17,7 +17,7 @@ import com.itrifonov.weatherviewer.interfaces.IOnListItemSelectedListener;
 import com.itrifonov.weatherviewer.services.interfaces.IServiceHelperCallbackListener;
 import com.itrifonov.weatherviewer.services.ServiceHelper;
 import com.itrifonov.weatherviewer.weatherapi.models.ForecastListItem;
-import com.itrifonov.weatherviewer.weatherapi.WeatherAdapter;
+import com.itrifonov.weatherviewer.adapters.WeatherAdapter;
 
 import io.realm.Realm;
 import io.realm.RealmResults;
