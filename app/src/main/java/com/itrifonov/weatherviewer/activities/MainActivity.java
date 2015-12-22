@@ -105,7 +105,7 @@ public class MainActivity extends AppCompatActivity
                 .findFragmentById(R.id.forecast_detail);
 
         if (savedInstanceState != null) {
-            timestamp = savedInstanceState.getInt(STATE_TIMESTAMP, -1);
+            timestamp = savedInstanceState.getLong(STATE_TIMESTAMP, -1);
             if (!isTabletLandscapeMode() && hasData) {
                 Intent intent = new Intent(this, DetailActivity.class);
                 intent.putExtra(DetailActivity.ARG_TIMESTAMP, timestamp);

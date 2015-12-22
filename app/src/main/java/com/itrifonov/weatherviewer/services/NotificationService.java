@@ -12,6 +12,7 @@ import android.graphics.Bitmap;
 import android.os.IBinder;
 import android.preference.PreferenceManager;
 import android.support.annotation.Nullable;
+import android.support.v4.app.TaskStackBuilder;
 import android.support.v7.app.NotificationCompat;
 
 import com.itrifonov.weatherviewer.R;
@@ -148,12 +149,15 @@ public class NotificationService extends Service {
                 inboxStyle.addLine(getString(R.string.txt_humidity,
                         (int) Math.round(forecastItem.getConditions().getHumidity())));
 
-                Intent notifyIntent = new Intent(context, DetailActivity.class);
-                notifyIntent.putExtra(DetailActivity.ARG_TIMESTAMP, forecastItem.getTimeStamp());
-                notifyIntent.putExtra(DetailActivity.ARG_IGNORE_LANDSCAPE, true);
+                Intent intent = new Intent(context, DetailActivity.class);
+                TaskStackBuilder stackBuilder = TaskStackBuilder.create(context);
+                stackBuilder.addParentStack(DetailActivity.class);
+                stackBuilder.addNextIntent(intent);
+                intent.putExtra(DetailActivity.ARG_TIMESTAMP, forecastItem.getTimeStamp());
+                intent.putExtra(DetailActivity.ARG_IGNORE_LANDSCAPE, true);
 
                 PendingIntent pendingIntent = PendingIntent.getActivity(context, 0,
-                        notifyIntent, PendingIntent.FLAG_CANCEL_CURRENT);
+                        intent, PendingIntent.FLAG_CANCEL_CURRENT);
 
                 NotificationCompat.Builder builder =
                         (NotificationCompat.Builder) new NotificationCompat.Builder(context)

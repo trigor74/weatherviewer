@@ -1,5 +1,6 @@
 package com.itrifonov.weatherviewer.activities;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
@@ -12,6 +13,8 @@ public class DetailActivity extends AppCompatActivity {
 
     public static String ARG_TIMESTAMP = "ARG_TIMESTAMP";
     public static String ARG_IGNORE_LANDSCAPE = "ARG_IGNORE_LANDSCAPE";
+    private long timestamp = -1;
+    private ForecastDetailFragment detailFragment;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -29,15 +32,32 @@ public class DetailActivity extends AppCompatActivity {
             actionBar.setDisplayHomeAsUpEnabled(true);
         }
 
-        ForecastDetailFragment detailFragment = (ForecastDetailFragment) getSupportFragmentManager()
+        detailFragment = (ForecastDetailFragment) getSupportFragmentManager()
                 .findFragmentById(R.id.forecast_detail);
 
-//        if (savedInstanceState == null) {
-            long timestamp = getIntent().getExtras().getLong(ARG_TIMESTAMP, -1);
-            if (detailFragment != null) {
-                detailFragment.update(timestamp);
-            }
-//        }
+        if (savedInstanceState == null) {
+            timestamp = getIntent().getExtras().getLong(ARG_TIMESTAMP, -1);
+        } else {
+            timestamp = savedInstanceState.getLong(ARG_TIMESTAMP, -1);
+        }
+        if (detailFragment != null) {
+            detailFragment.update(timestamp);
+        }
+    }
+
+    @Override
+    protected void onNewIntent(Intent intent) {
+        super.onNewIntent(intent);
+        timestamp = intent.getExtras().getLong(ARG_TIMESTAMP, -1);
+        if (detailFragment != null) {
+            detailFragment.update(timestamp);
+        }
+    }
+
+    @Override
+    protected void onSaveInstanceState(Bundle outState) {
+        outState.putLong(ARG_TIMESTAMP, timestamp);
+        super.onSaveInstanceState(outState);
     }
 
     private boolean isTabletLandscapeMode() {
