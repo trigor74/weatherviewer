@@ -80,4 +80,5 @@
     </string-array>
     <string name="last_update_key">LAST_UPDATE</string>
     <string name="current_city_key">CURRENT_CITY</string>
+    <string name="current_timestamp_key">CURRENT_TIMESTAMP</string>
 </resources>

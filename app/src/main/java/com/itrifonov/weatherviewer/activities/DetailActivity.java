@@ -11,7 +11,6 @@ import com.itrifonov.weatherviewer.fragments.ForecastDetailFragment;
 
 public class DetailActivity extends AppCompatActivity {
 
-    public static String ARG_TIMESTAMP = "ARG_TIMESTAMP";
     public static String ARG_IGNORE_LANDSCAPE = "ARG_IGNORE_LANDSCAPE";
     private long timestamp = -1;
     private ForecastDetailFragment detailFragment;
@@ -36,9 +35,9 @@ public class DetailActivity extends AppCompatActivity {
                 .findFragmentById(R.id.forecast_detail);
 
         if (savedInstanceState == null) {
-            timestamp = getIntent().getExtras().getLong(ARG_TIMESTAMP, -1);
+            timestamp = getIntent().getExtras().getLong(getString(R.string.current_timestamp_key), -1);
         } else {
-            timestamp = savedInstanceState.getLong(ARG_TIMESTAMP, -1);
+            timestamp = savedInstanceState.getLong(getString(R.string.current_timestamp_key), -1);
         }
         if (detailFragment != null) {
             detailFragment.update(timestamp);
@@ -48,7 +47,7 @@ public class DetailActivity extends AppCompatActivity {
     @Override
     protected void onNewIntent(Intent intent) {
         super.onNewIntent(intent);
-        timestamp = intent.getExtras().getLong(ARG_TIMESTAMP, -1);
+        timestamp = intent.getExtras().getLong(getString(R.string.current_timestamp_key), -1);
         if (detailFragment != null) {
             detailFragment.update(timestamp);
         }
@@ -56,7 +55,7 @@ public class DetailActivity extends AppCompatActivity {
 
     @Override
     protected void onSaveInstanceState(Bundle outState) {
-        outState.putLong(ARG_TIMESTAMP, timestamp);
+        outState.putLong(getString(R.string.current_timestamp_key), timestamp);
         super.onSaveInstanceState(outState);
     }
 

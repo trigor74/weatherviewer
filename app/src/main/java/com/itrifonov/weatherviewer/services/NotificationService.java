@@ -149,15 +149,15 @@ public class NotificationService extends Service {
                 inboxStyle.addLine(getString(R.string.txt_humidity,
                         (int) Math.round(forecastItem.getConditions().getHumidity())));
 
-                Intent intent = new Intent(context, DetailActivity.class);
+                Intent detailIntent = new Intent(context, DetailActivity.class);
+                detailIntent.putExtra(getString(R.string.current_timestamp_key), forecastItem.getTimeStamp());
+                detailIntent.putExtra(DetailActivity.ARG_IGNORE_LANDSCAPE, true);
+                Intent mainIntent = new Intent(context, MainActivity.class);
+                mainIntent.putExtra(getString(R.string.current_timestamp_key), forecastItem.getTimeStamp());
                 TaskStackBuilder stackBuilder = TaskStackBuilder.create(context);
-                stackBuilder.addParentStack(DetailActivity.class);
-                stackBuilder.addNextIntent(intent);
-                intent.putExtra(DetailActivity.ARG_TIMESTAMP, forecastItem.getTimeStamp());
-                intent.putExtra(DetailActivity.ARG_IGNORE_LANDSCAPE, true);
-
-                PendingIntent pendingIntent = PendingIntent.getActivity(context, 0,
-                        intent, PendingIntent.FLAG_CANCEL_CURRENT);
+                stackBuilder.addNextIntent(mainIntent);
+                stackBuilder.addNextIntent(detailIntent);
+                PendingIntent pendingIntent = stackBuilder.getPendingIntent(0, PendingIntent.FLAG_UPDATE_CURRENT);
 
                 NotificationCompat.Builder builder =
                         (NotificationCompat.Builder) new NotificationCompat.Builder(context)

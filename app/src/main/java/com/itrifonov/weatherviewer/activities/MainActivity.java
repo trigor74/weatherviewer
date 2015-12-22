@@ -29,7 +29,6 @@ public class MainActivity extends AppCompatActivity
 
     private SharedPreferences preferences;
     private long timestamp = -1;
-    private static final String STATE_TIMESTAMP = "STATE_TIMESTAMP";
     private Boolean hasData = false;
     private Realm realm;
     private IServiceHelperCallbackListener callback = new IServiceHelperCallbackListener() {
@@ -104,14 +103,20 @@ public class MainActivity extends AppCompatActivity
         ForecastDetailFragment detailFragment = (ForecastDetailFragment) getSupportFragmentManager()
                 .findFragmentById(R.id.forecast_detail);
 
+        timestamp = preferences.getLong(getString(R.string.current_timestamp_key), timestamp);
+
         if (savedInstanceState != null) {
-            timestamp = savedInstanceState.getLong(STATE_TIMESTAMP, -1);
+            timestamp = savedInstanceState.getLong(getString(R.string.current_timestamp_key), timestamp);
             if (!isTabletLandscapeMode() && hasData) {
                 Intent intent = new Intent(this, DetailActivity.class);
-                intent.putExtra(DetailActivity.ARG_TIMESTAMP, timestamp);
+                intent.putExtra(getString(R.string.current_timestamp_key), timestamp);
                 startActivity(intent);
             }
+        } else {
+            if (getIntent().getExtras() != null)
+                timestamp = getIntent().getExtras().getLong(getString(R.string.current_timestamp_key), timestamp);
         }
+
         if (hasData
                 && isTabletLandscapeMode()
                 && (findViewById(R.id.forecast_detail) != null)
@@ -160,14 +165,14 @@ public class MainActivity extends AppCompatActivity
             }
         } else {
             Intent intent = new Intent(this, DetailActivity.class);
-            intent.putExtra(DetailActivity.ARG_TIMESTAMP, timestamp);
+            intent.putExtra(getString(R.string.current_timestamp_key), timestamp);
             startActivity(intent);
         }
     }
 
     @Override
     protected void onSaveInstanceState(Bundle outState) {
-        outState.putLong(STATE_TIMESTAMP, timestamp);
+        outState.putLong(getString(R.string.current_timestamp_key), timestamp);
         super.onSaveInstanceState(outState);
     }
 
@@ -183,13 +188,14 @@ public class MainActivity extends AppCompatActivity
 
     @Override
     protected void onPause() {
-        super.onPause();
         ServiceHelper.getInstance(getApplicationContext()).removeListener(callback);
+        preferences.edit().putLong(getString(R.string.current_timestamp_key), timestamp).commit();
+        super.onPause();
     }
 
     @Override
     protected void onDestroy() {
-        super.onDestroy();
         realm.close();
+        super.onDestroy();
     }
 }
