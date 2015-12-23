@@ -4,11 +4,15 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.os.Bundle;
 
+import com.itrifonov.weatherviewer.R;
 import com.itrifonov.weatherviewer.services.interfaces.IServiceHelperCallbackListener;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 
 public class ServiceHelper {
 
@@ -23,7 +27,7 @@ public class ServiceHelper {
 
     private static ServiceHelper helperInstance;
     private static Context context;
-    private static ArrayList<IServiceHelperCallbackListener> callbackListeners = new ArrayList<>();
+    private static HashSet<IServiceHelperCallbackListener> callbackListeners = new HashSet<>();
 
     public static ServiceHelper getInstance(Context context) {
         if (helperInstance == null) {
@@ -72,8 +76,25 @@ public class ServiceHelper {
     }
 
     public void updateWeatherForecast() {
-        Intent intent = new Intent(context, UpdateService.class);
-        context.startService(intent);
+        if (isInternetOn()) {
+            Intent intent = new Intent(context, UpdateService.class);
+            context.startService(intent);
+        } else {
+            Bundle event = new Bundle();
+            event.putInt(SERVICE_HELPER_EVENT, EVENT_UPDATE_STOPPED);
+            event.putString(PARAM_UPDATE_RESULT, context.getString(R.string.txt_no_internet_connection));
+            dispatchCallbacks(event);
+        }
+    }
+
+    public boolean isInternetOn() {
+        NetworkInfo networkInfo = (NetworkInfo) ((ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE)).getActiveNetworkInfo();
+        if (networkInfo == null) {
+            return false;
+        } else if (!networkInfo.isConnected() || networkInfo.isRoaming()) {
+            return false;
+        }
+        return true;
     }
 
     private BroadcastReceiver broadcastReceiver = new BroadcastReceiver() {

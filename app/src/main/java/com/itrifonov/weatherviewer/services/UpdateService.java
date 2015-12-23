@@ -1,8 +1,11 @@
 package com.itrifonov.weatherviewer.services;
 
 import android.app.Service;
+import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.os.IBinder;
 import android.preference.PreferenceManager;
 import android.support.annotation.Nullable;
@@ -37,6 +40,7 @@ public class UpdateService extends Service {
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
         if (startId == 1) {
+            checkInternetConnection();
             SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
             String city = preferences.getString(getString(R.string.settings_city_key), getString(R.string.settings_city_default));
             String apiid = preferences.getString(getString(R.string.settings_appid_key), getString(R.string.settings_appid_default));
@@ -46,6 +50,24 @@ public class UpdateService extends Service {
         }
         return Service.START_NOT_STICKY;
     }
+
+    private void checkInternetConnection() {
+        Boolean internetAvailable = true;
+        NetworkInfo networkInfo = (NetworkInfo) ((ConnectivityManager) getApplicationContext().getSystemService(Context.CONNECTIVITY_SERVICE)).getActiveNetworkInfo();
+        if (networkInfo == null) {
+            internetAvailable = false;
+        } else if (!networkInfo.isConnected() || networkInfo.isRoaming()) {
+            internetAvailable = false;
+        }
+        if (!internetAvailable) {
+            Intent intent = new Intent(BROADCAST_ACTION);
+            intent.putExtra(PARAM_STATUS, STATUS_FINISH);
+            intent.putExtra(PARAM_RESULT, getString(R.string.txt_no_internet_connection));
+            sendBroadcast(intent);
+            stopSelf();
+        }
+    }
+
 
     private IWeatherUpdateListener updateListener = new IWeatherUpdateListener() {
         @Override

@@ -29,7 +29,6 @@ public class MainActivity extends AppCompatActivity
 
     private SharedPreferences preferences;
     private long timestamp = -1;
-    private Boolean hasData = false;
     private Realm realm;
     private IServiceHelperCallbackListener callback = new IServiceHelperCallbackListener() {
         @Override
@@ -41,16 +40,32 @@ public class MainActivity extends AppCompatActivity
             ProgressBar progress = (ProgressBar) findViewById(R.id.progress_missing_forecast);
             if (progress != null)
                 progress.setVisibility(TextView.INVISIBLE);
-            if (hasData && timestamp == -1)
-                timestamp = 0;
-            TextView textMissingForecast = (TextView) findViewById(R.id.text_view_missing_forecast);
-            if (textMissingForecast != null)
-                textMissingForecast.setVisibility(TextView.INVISIBLE);
-            if (isTabletLandscapeMode() && hasData) {
-                ForecastDetailFragment detailFragment = (ForecastDetailFragment) getSupportFragmentManager()
-                        .findFragmentById(R.id.forecast_detail);
-                if (detailFragment != null)
-                    detailFragment.update(timestamp);
+
+            if (hasData()) {
+                if (timestamp == -1)
+                    timestamp = 0;
+                TextView textMissingForecast = (TextView) findViewById(R.id.text_view_missing_forecast);
+                if (textMissingForecast != null)
+                    textMissingForecast.setVisibility(TextView.INVISIBLE);
+                if (isTabletLandscapeMode()) {
+                    ForecastDetailFragment detailFragment = (ForecastDetailFragment) getSupportFragmentManager()
+                            .findFragmentById(R.id.forecast_detail);
+                    if (detailFragment != null)
+                        detailFragment.update(timestamp);
+                }
+            } else {
+                String resultMessage = event.getString(ServiceHelper.PARAM_UPDATE_RESULT);
+                if (resultMessage != null && !resultMessage.isEmpty()) {
+                    TextView textMissingForecast = (TextView) findViewById(R.id.text_view_missing_forecast);
+                    if (textMissingForecast != null) {
+                        String text = getString(R.string.txt_no_data);
+                        text = text.concat("\n".concat(resultMessage));
+                        if (resultMessage.equals(getString(R.string.txt_no_internet_connection)))
+                            text = text.concat("\n".concat(getString(R.string.txt_check_internet_connection)));
+                        textMissingForecast.setText(text);
+                    }
+                }
+
             }
         }
     };
@@ -64,10 +79,9 @@ public class MainActivity extends AppCompatActivity
 
         preferences = getPreferences(Context.MODE_PRIVATE);
 
-        RealmResults<ForecastListItem> realmResults = realm.allObjects(ForecastListItem.class);
-        hasData = realmResults.size() != 0;
-
         ServiceHelper serviceHelper = ServiceHelper.getInstance(getApplicationContext());
+        serviceHelper.addListener(callback);
+
         Boolean showNotifications = preferences.getBoolean(getString(R.string.settings_show_notifications_key),
                 getResources().getBoolean(R.bool.settings_show_notifications_default));
         if (showNotifications) {
@@ -86,7 +100,7 @@ public class MainActivity extends AppCompatActivity
 
         TextView textMissingForecast = (TextView) findViewById(R.id.text_view_missing_forecast);
         ProgressBar progress = (ProgressBar) findViewById(R.id.progress_missing_forecast);
-        if (hasData) {
+        if (hasData()) {
             timestamp = 0;
             if (textMissingForecast != null)
                 textMissingForecast.setVisibility(TextView.INVISIBLE);
@@ -107,7 +121,7 @@ public class MainActivity extends AppCompatActivity
 
         if (savedInstanceState != null) {
             timestamp = savedInstanceState.getLong(getString(R.string.current_timestamp_key), timestamp);
-            if (!isTabletLandscapeMode() && hasData) {
+            if (!isTabletLandscapeMode() && hasData()) {
                 Intent intent = new Intent(this, DetailActivity.class);
                 intent.putExtra(getString(R.string.current_timestamp_key), timestamp);
                 startActivity(intent);
@@ -117,11 +131,20 @@ public class MainActivity extends AppCompatActivity
                 timestamp = getIntent().getExtras().getLong(getString(R.string.current_timestamp_key), timestamp);
         }
 
-        if (hasData
+        if (hasData()
                 && isTabletLandscapeMode()
                 && (findViewById(R.id.forecast_detail) != null)
                 && (detailFragment != null)) {
             detailFragment.update(timestamp);
+        }
+    }
+
+    private Boolean hasData() {
+        if (realm != null) {
+            RealmResults<ForecastListItem> realmResults = realm.allObjects(ForecastListItem.class);
+            return realmResults.size() != 0;
+        } else {
+            return false;
         }
     }
 
