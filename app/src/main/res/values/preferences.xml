@@ -3,17 +3,17 @@
     <string name="settings_appid_key">API_KEY</string>
     <string name="settings_appid_title">API key (APPID)</string>
     <string name="settings_appid_dialog_title">Enter API key (APPID)</string>
-    <string name="settings_appid_summary">To get access to weather API you need an API key whatever account you chose from Free to Enterprise.</string>
+    <string name="settings_appid_hint">To get access to weather API you need an API key whatever account you chose from Free to Enterprise.</string>
     <string name="settings_appid_default">28bfbe7a35614f03ddaaf3b091f2a414</string>
     <string name="settings_city_key">CITY</string>
     <string name="settings_city_title">City Name or ID</string>
     <string name="settings_city_dialog_title">Enter City Name or ID</string>
-    <string name="settings_city_summary">City name and country code divided by comma, or city ID.</string>
+    <string name="settings_city_hint">City name and country code divided by comma, or city ID.</string>
     <string name="settings_city_default">Cherkasy,UA</string>
     <string name="settings_units_key">UNITS</string>
     <string name="settings_units_title">Units format</string>
     <string name="settings_units_dialog_title">Choose units format</string>
-    <string name="settings_units_summary">Standard, metric, and imperial units are available.</string>
+    <string name="settings_units_hint">Standard, metric, and imperial units are available.</string>
     <string name="settings_units_default">metric</string>
     <string name="settings_language_key">LANGUAGE</string>
     <string name="settings_language_title">Language</string>
@@ -26,6 +26,10 @@
     <string name="settings_show_notifications_key">SHOW_NOTIFICATION</string>
     <string name="settings_show_notifications_title">Show weather notifications</string>
     <bool name="settings_show_notifications_default">true</bool>
+    <string name="settings_notification_interval_key">NOTIFICATION_INTERVAL</string>
+    <string name="settings_notification_interval_title">Notification interval</string>
+    <string name="settings_notification_interval_dialog_title">Select notification interval</string>
+    <string name="settings_notification_interval_default">60000</string>
     <string-array name="settings_units_names">
         <item>Standard (Kelvin)</item>
         <item>Metric (Celsius)</item>
@@ -77,6 +81,22 @@
         <item>tr</item>
         <item>hr</item>
         <item>ca</item>
+    </string-array>
+    <string-array name="settings_notification_interval_names">
+        <item>1 minutes</item>
+        <item>5 minutes</item>
+        <item>10 minutes</item>
+        <item>30 minutes</item>
+        <item>1 hours</item>
+        <item>2 hours</item>
+    </string-array>
+    <string-array name="settings_notification_interval_values">
+        <item>60000</item>
+        <item>300000</item>
+        <item>600000</item>
+        <item>1800000</item>
+        <item>3600000</item>
+        <item>7200000</item>
     </string-array>
     <string name="last_update_key">LAST_UPDATE</string>
     <string name="current_city_key">CURRENT_CITY</string>

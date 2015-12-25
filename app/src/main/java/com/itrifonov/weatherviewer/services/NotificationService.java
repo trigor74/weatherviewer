@@ -31,8 +31,7 @@ import io.realm.Realm;
 
 public class NotificationService extends Service {
 
-    private long updateWeatherInfoInterval = 600 * 1000; // 10 min
-    private Timer currentWeatherInfoTimer = new Timer();
+    private Timer currentWeatherInfoTimer = null;
     private NotificationManager notificationManager;
     private static final int WEATHER_NOTIFICATION_ID = 1;
     private static final int SERVICE_NOTIFICATION_ID = 2;
@@ -56,17 +55,25 @@ public class NotificationService extends Service {
         super.onCreate();
         context = getApplicationContext();
         notificationManager = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
-        sheduleTasks();
+        scheduleTasks();
         context.registerReceiver(broadcastReceiver, new IntentFilter(UpdateService.BROADCAST_ACTION));
     }
 
-    private void sheduleTasks() {
+    private void scheduleTasks() {
+        if (currentWeatherInfoTimer != null) {
+            currentWeatherInfoTimer.cancel();
+        }
+        currentWeatherInfoTimer = new Timer();
+        SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
+        int interval = Integer.parseInt(preferences.getString(getString(R.string.settings_notification_interval_key),
+                getString(R.string.settings_notification_interval_default)));
+
         currentWeatherInfoTimer.scheduleAtFixedRate(
                 new TimerTask() {
                     public void run() {
                         sendCurrentWeatherNotification();
                     }
-                }, 0, updateWeatherInfoInterval);
+                }, 0, interval);
     }
 
     @Override
@@ -74,14 +81,21 @@ public class NotificationService extends Service {
         if (startId == 1) {
             sendServiceStateNotification(true);
             sendCurrentWeatherNotification();
+        } else {
+            scheduleTasks();
         }
         return Service.START_STICKY;
     }
 
     @Override
     public void onDestroy() {
-        if (currentWeatherInfoTimer != null) currentWeatherInfoTimer.cancel();
-        if (notificationManager != null) notificationManager.cancelAll();
+        if (currentWeatherInfoTimer != null) {
+            currentWeatherInfoTimer.cancel();
+            currentWeatherInfoTimer = null;
+        }
+        if (notificationManager != null) {
+            notificationManager.cancelAll();
+        }
         sendServiceStateNotification(false);
         context.unregisterReceiver(broadcastReceiver);
         super.onDestroy();

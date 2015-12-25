@@ -1,4 +1,4 @@
-package com.itrifonov.weatherviewer.services.interfaces;
+package com.itrifonov.weatherviewer.interfaces;
 
 import android.os.Bundle;
 
