@@ -9,9 +9,8 @@ import android.net.NetworkInfo;
 import android.os.Bundle;
 
 import com.itrifonov.weatherviewer.R;
-import com.itrifonov.weatherviewer.services.interfaces.IServiceHelperCallbackListener;
+import com.itrifonov.weatherviewer.interfaces.IServiceHelperCallbackListener;
 
-import java.util.ArrayList;
 import java.util.HashSet;
 
 public class ServiceHelper {
