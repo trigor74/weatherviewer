@@ -11,7 +11,7 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import com.itrifonov.weatherviewer.R;
-import com.itrifonov.weatherviewer.services.interfaces.IServiceHelperCallbackListener;
+import com.itrifonov.weatherviewer.interfaces.IServiceHelperCallbackListener;
 import com.itrifonov.weatherviewer.services.ServiceHelper;
 
 import java.text.DateFormat;

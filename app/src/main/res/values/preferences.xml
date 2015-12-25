@@ -26,6 +26,10 @@
     <string name="settings_show_notifications_key">SHOW_NOTIFICATION</string>
     <string name="settings_show_notifications_title">Show weather notifications</string>
     <bool name="settings_show_notifications_default">true</bool>
+    <string name="settings_notification_interval_key">NOTIFICATION_INTERVAL</string>
+    <string name="settings_notification_interval_title">Notification interval</string>
+    <string name="settings_notification_interval_dialog_title">Select notification interval</string>
+    <string name="settings_notification_interval_default">60000</string>
     <string-array name="settings_units_names">
         <item>Standard (Kelvin)</item>
         <item>Metric (Celsius)</item>
@@ -77,6 +81,22 @@
         <item>tr</item>
         <item>hr</item>
         <item>ca</item>
+    </string-array>
+    <string-array name="settings_notification_interval_names">
+        <item>1 minutes</item>
+        <item>5 minutes</item>
+        <item>10 minutes</item>
+        <item>30 minutes</item>
+        <item>1 hours</item>
+        <item>2 hours</item>
+    </string-array>
+    <string-array name="settings_notification_interval_values">
+        <item>60000</item>
+        <item>300000</item>
+        <item>600000</item>
+        <item>1800000</item>
+        <item>3600000</item>
+        <item>7200000</item>
     </string-array>
     <string name="last_update_key">LAST_UPDATE</string>
     <string name="current_city_key">CURRENT_CITY</string>

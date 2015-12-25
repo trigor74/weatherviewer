@@ -6,7 +6,7 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.os.Bundle;
 
-import com.itrifonov.weatherviewer.services.interfaces.IServiceHelperCallbackListener;
+import com.itrifonov.weatherviewer.interfaces.IServiceHelperCallbackListener;
 
 import java.util.ArrayList;
 

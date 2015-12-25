@@ -43,5 +43,13 @@
             android:key="@string/settings_show_notifications_key"
             android:title="@string/settings_show_notifications_title"
             android:defaultValue="@bool/settings_show_notifications_default" />
+        <ListPreference
+            android:key="@string/settings_notification_interval_key"
+            android:title="@string/settings_notification_interval_title"
+            android:dialogTitle="@string/settings_notification_interval_dialog_title"
+            android:entries="@array/settings_notification_interval_names"
+            android:entryValues="@array/settings_notification_interval_values"
+            android:defaultValue="@string/settings_notification_interval_default"
+            />
     </PreferenceCategory>
 </PreferenceScreen>

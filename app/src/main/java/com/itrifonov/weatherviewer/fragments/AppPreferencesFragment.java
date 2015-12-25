@@ -17,14 +17,26 @@ public class AppPreferencesFragment extends PreferenceFragment
         addPreferencesFromResource(R.xml.preferences);
 
         SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(getActivity().getApplicationContext());
+
         findPreference(getString(R.string.settings_appid_key))
-                .setSummary(preferences.getString(getString(R.string.settings_appid_key), getString(R.string.settings_appid_default)));
+                .setSummary(preferences.getString(getString(R.string.settings_appid_key),
+                        getString(R.string.settings_appid_default)));
+
         findPreference(getString(R.string.settings_city_key))
-                .setSummary(preferences.getString(getString(R.string.settings_city_key), getString(R.string.settings_city_default)));
+                .setSummary(preferences.getString(getString(R.string.settings_city_key),
+                        getString(R.string.settings_city_default)));
+
         findPreference(getString(R.string.settings_units_key))
-                .setSummary(preferences.getString(getString(R.string.settings_units_key), getString(R.string.settings_units_default)));
+                .setSummary(preferences.getString(getString(R.string.settings_units_key),
+                        getString(R.string.settings_units_default)));
+
         findPreference(getString(R.string.settings_language_key))
-                .setSummary(preferences.getString(getString(R.string.settings_language_key), getString(R.string.settings_language_default)));
+                .setSummary(preferences.getString(getString(R.string.settings_language_key),
+                        getString(R.string.settings_language_default)));
+
+        findPreference(getString(R.string.settings_notification_interval_key))
+                .setSummary(preferences.getString(getString(R.string.settings_notification_interval_key),
+                        getString(R.string.settings_notification_interval_default)));
     }
 
     @Override
@@ -43,11 +55,24 @@ public class AppPreferencesFragment extends PreferenceFragment
 
     @Override
     public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String key) {
-        if (key.equals(getString(R.string.settings_language_key))) {
-            Preference langPref = findPreference(key);
-            langPref.setSummary(sharedPreferences.getString(key, ""));
+        if (key.equals(getString(R.string.settings_appid_key))) {
+            findPreference(key).setSummary(sharedPreferences.getString(key, getString(R.string.settings_appid_default)));
         }
-        if (key.equals(getString(R.string.settings_show_notifications_key))) {
+        if (key.equals(getString(R.string.settings_city_key))) {
+            findPreference(key).setSummary(sharedPreferences.getString(key, getString(R.string.settings_city_default)));
+        }
+        if (key.equals(getString(R.string.settings_units_key))) {
+            findPreference(key).setSummary(sharedPreferences.getString(key, getString(R.string.settings_units_default)));
+        }
+        if (key.equals(getString(R.string.settings_language_key))) {
+            findPreference(key).setSummary(sharedPreferences.getString(key, getString(R.string.settings_language_default)));
+        }
+        if (key.equals(getString(R.string.settings_notification_interval_key))) {
+            findPreference(key).setSummary(sharedPreferences.getString(key, getString(R.string.settings_notification_interval_default)));
+
+        }
+        if (key.equals(getString(R.string.settings_show_notifications_key))
+                || key.equals(getString(R.string.settings_notification_interval_key))) { // also if interval has been changed - start service for change timer
             Boolean showNotifications = sharedPreferences.getBoolean(
                     getString(R.string.settings_show_notifications_key),
                     getResources().getBoolean(R.bool.settings_show_notifications_default));
