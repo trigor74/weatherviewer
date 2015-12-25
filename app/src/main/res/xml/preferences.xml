@@ -6,14 +6,12 @@
             android:key="@string/settings_appid_key"
             android:title="@string/settings_appid_title"
             android:dialogTitle="@string/settings_appid_dialog_title"
-            android:summary="@string/settings_appid_summary"
             android:defaultValue="@string/settings_appid_default"
             />
         <EditTextPreference
             android:key="@string/settings_city_key"
             android:title="@string/settings_city_title"
             android:dialogTitle="@string/settings_city_dialog_title"
-            android:summary="@string/settings_city_summary"
             android:defaultValue="@string/settings_city_default"
             />
 
@@ -21,7 +19,6 @@
             android:key="@string/settings_units_key"
             android:title="@string/settings_units_title"
             android:dialogTitle="@string/settings_units_dialog_title"
-            android:summary="@string/settings_units_summary"
             android:entries="@array/settings_units_names"
             android:entryValues="@array/settings_units_values"
             android:defaultValue="@string/settings_units_default"
