@@ -12,6 +12,12 @@
             android:key="@string/settings_city_key"
             android:title="@string/settings_city_title" />
 
+        <Preference
+            android:key="@string/settings_search_city_key"
+            android:title="@string/settings_search_city_title"
+            android:icon="@drawable/ic_my_location_white_24dp"
+            />
+
         <ListPreference
             android:defaultValue="@string/settings_units_default"
             android:dialogTitle="@string/settings_units_dialog_title"

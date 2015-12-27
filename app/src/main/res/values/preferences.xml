@@ -10,6 +10,8 @@
     <string name="settings_city_dialog_title">Enter City Name or ID</string>
     <string name="settings_city_hint">City name and country code divided by comma, or city ID.</string>
     <string name="settings_city_default">Cherkasy,UA</string>
+    <string name="settings_search_city_key">SEARCH_CITY</string>
+    <string name="settings_search_city_title">Search city using location service</string>
     <string name="settings_units_key">UNITS</string>
     <string name="settings_units_title">Units format</string>
     <string name="settings_units_dialog_title">Choose units format</string>
