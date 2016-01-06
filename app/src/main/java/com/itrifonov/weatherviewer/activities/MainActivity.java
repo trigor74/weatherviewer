@@ -121,11 +121,6 @@ public class MainActivity extends AppCompatActivity
 
         if (savedInstanceState != null) {
             timestamp = savedInstanceState.getLong(getString(R.string.current_timestamp_key), timestamp);
-            if (!isTabletLandscapeMode() && hasData()) {
-                Intent intent = new Intent(this, DetailActivity.class);
-                intent.putExtra(getString(R.string.current_timestamp_key), timestamp);
-                startActivity(intent);
-            }
         } else {
             if (getIntent().getExtras() != null)
                 timestamp = getIntent().getExtras().getLong(getString(R.string.current_timestamp_key), timestamp);

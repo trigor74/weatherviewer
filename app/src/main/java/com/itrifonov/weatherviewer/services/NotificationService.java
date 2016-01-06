@@ -165,7 +165,6 @@ public class NotificationService extends Service {
 
                 Intent detailIntent = new Intent(context, DetailActivity.class);
                 detailIntent.putExtra(getString(R.string.current_timestamp_key), forecastItem.getTimeStamp());
-                detailIntent.putExtra(DetailActivity.ARG_IGNORE_LANDSCAPE, true);
                 Intent mainIntent = new Intent(context, MainActivity.class);
                 mainIntent.putExtra(getString(R.string.current_timestamp_key), forecastItem.getTimeStamp());
                 TaskStackBuilder stackBuilder = TaskStackBuilder.create(context);

@@ -8,8 +8,8 @@ android {
         applicationId "com.itrifonov.weatherviewer"
         minSdkVersion 15
         targetSdkVersion 23
-        versionCode 5
-        versionName "5.0 RC1"
+        versionCode 6
+        versionName "5.1 RC2"
     }
     buildTypes {
         release {
