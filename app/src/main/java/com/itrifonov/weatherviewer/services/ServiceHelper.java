@@ -45,7 +45,7 @@ public class ServiceHelper {
 
     private ServiceHelper(Context context) {
         setContext(context);
-        context.registerReceiver(broadcastReceiver, new IntentFilter(UpdateService.BROADCAST_ACTION));
+        context.registerReceiver(broadcastReceiver, new IntentFilter(UpdateIntentService.BROADCAST_ACTION));
     }
 
     public void addListener(IServiceHelperCallbackListener listener) {
@@ -76,7 +76,7 @@ public class ServiceHelper {
 
     public void updateWeatherForecast() {
         if (isInternetOn()) {
-            Intent intent = new Intent(context, UpdateService.class);
+            Intent intent = new Intent(context, UpdateIntentService.class);
             context.startService(intent);
         } else {
             Bundle event = new Bundle();
@@ -100,20 +100,20 @@ public class ServiceHelper {
         @Override
         public void onReceive(Context context, Intent intent) {
             Bundle event = new Bundle();
-            int status = intent.getIntExtra(UpdateService.PARAM_STATUS, -1);
+            int status = intent.getIntExtra(UpdateIntentService.PARAM_STATUS, -1);
             switch (status) {
-                case UpdateService.STATUS_START:
+                case UpdateIntentService.STATUS_START:
                     event.putInt(SERVICE_HELPER_EVENT, EVENT_UPDATE_STARTED);
                     dispatchCallbacks(event);
                     break;
-                case UpdateService.STATUS_PROGRESS:
-                    int progress = intent.getIntExtra(UpdateService.PARAM_PROGRESS, -1);
+                case UpdateIntentService.STATUS_PROGRESS:
+                    int progress = intent.getIntExtra(UpdateIntentService.PARAM_PROGRESS, -1);
                     event.putInt(SERVICE_HELPER_EVENT, EVENT_UPDATE_PROGRESS);
                     event.putInt(PARAM_UPDATE_PROGRESS, progress);
                     dispatchCallbacks(event);
                     break;
-                case UpdateService.STATUS_FINISH:
-                    String errorMessage = intent.getStringExtra(UpdateService.PARAM_RESULT);
+                case UpdateIntentService.STATUS_FINISH:
+                    String errorMessage = intent.getStringExtra(UpdateIntentService.PARAM_RESULT);
                     event.putInt(SERVICE_HELPER_EVENT, EVENT_UPDATE_STOPPED);
                     event.putString(PARAM_UPDATE_RESULT, errorMessage);
                     dispatchCallbacks(event);

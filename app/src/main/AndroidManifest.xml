@@ -43,12 +43,10 @@
         <service
             android:name=".services.NotificationService"
             android:enabled="true"
-            android:exported="true"></service>
-
+            android:exported="true" />
         <service
-            android:name=".services.UpdateService"
-            android:enabled="true"
-            android:exported="true"></service>
+            android:name=".services.UpdateIntentService"
+            android:exported="false"></service>
     </application>
 
 </manifest>

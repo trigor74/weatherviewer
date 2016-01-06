@@ -56,7 +56,7 @@ public class NotificationService extends Service {
         context = getApplicationContext();
         notificationManager = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
         scheduleTasks();
-        context.registerReceiver(broadcastReceiver, new IntentFilter(UpdateService.BROADCAST_ACTION));
+        context.registerReceiver(broadcastReceiver, new IntentFilter(UpdateIntentService.BROADCAST_ACTION));
     }
 
     private void scheduleTasks() {
@@ -187,7 +187,7 @@ public class NotificationService extends Service {
                                 .setPriority(NotificationCompat.PRIORITY_LOW);
 
                 //Update button
-                Intent serviceIntent = new Intent(context, UpdateService.class);
+                Intent serviceIntent = new Intent(context, UpdateIntentService.class);
                 PendingIntent servicePending = PendingIntent.getService(context, 0,
                         serviceIntent, PendingIntent.FLAG_CANCEL_CURRENT);
                 builder.addAction(R.drawable.ic_sync_white_18dp,
@@ -256,17 +256,17 @@ public class NotificationService extends Service {
     private BroadcastReceiver broadcastReceiver = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {
-            int status = intent.getIntExtra(UpdateService.PARAM_STATUS, -1);
+            int status = intent.getIntExtra(UpdateIntentService.PARAM_STATUS, -1);
             switch (status) {
-                case UpdateService.STATUS_START:
+                case UpdateIntentService.STATUS_START:
                     sendUpdateStateNotification(UPDATE_STATUS_STARTED);
                     break;
-                case UpdateService.STATUS_PROGRESS:
-                    int progress = intent.getIntExtra(UpdateService.PARAM_PROGRESS, -1);
+                case UpdateIntentService.STATUS_PROGRESS:
+                    int progress = intent.getIntExtra(UpdateIntentService.PARAM_PROGRESS, -1);
                     sendUpdateStateNotification(UPDATE_STATUS_INPROGRESS);
                     break;
-                case UpdateService.STATUS_FINISH:
-                    String result = intent.getStringExtra(UpdateService.PARAM_RESULT);
+                case UpdateIntentService.STATUS_FINISH:
+                    String result = intent.getStringExtra(UpdateIntentService.PARAM_RESULT);
                     if (result.isEmpty()) {
                         sendUpdateStateNotification(UPDATE_STATUS_UPDATED);
                     } else {
